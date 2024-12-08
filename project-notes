@@ -1,0 +1,14 @@
+admin responsibilities
+    users -> crud, roles selection,(student, teacher)
+    courses -> crud
+    roles -> crud
+    batches -> crud
+
+
+
+
+    teacher -> (name, age, course, timings, batch)
+
+
+    
+    student -> (name, age, course, timings, batch)
