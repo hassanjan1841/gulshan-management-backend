@@ -1,5 +1,5 @@
 {
-  "name": "hassan-portfolio-backend",
+  "name": "gulshan-management-system",
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
@@ -7,7 +7,13 @@
     "start": "node server.js",
     "dev": "nodemon server.js"
   },
-  "keywords": [],
+  "keywords": [
+    "gulshan-management-system",
+    "saylani mass it training",
+    "saylani",
+    "management",
+    "system"
+  ],
   "author": "",
   "license": "ISC",
   "description": "",

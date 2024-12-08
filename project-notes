@@ -1,14 +1,15 @@
 admin responsibilities
     users -> crud, roles selection,(student, teacher)
-    courses -> crud
-    roles -> crud
-    batches -> crud
+    courses -> crud (name, code, timings, instructor, duration )
+    roles -> crud (name)
+    batches -> crud (name)
 
 
 
+    admin -> (name, age, courses, batches,)
 
-    teacher -> (name, age, course, timings, batch)
+    teacher -> (name, age, timings, batch, assignments, qualifications, profilePic,phone,email, enrolledCourses{name, code, instructor, duration, timings})
 
 
-    
-    student -> (name, age, course, timings, batch)
+
+    student -> (name, age,email, phone, enrolledCourse, timings, batch, assignments, profilePic, guardianDetails{name, phone, relationship})
