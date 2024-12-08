@@ -8,8 +8,8 @@ admin responsibilities
 
     admin -> (name, age, courses, batches,)
 
-    teacher -> (name, age, timings, batch, assignments, qualifications, profilePic,phone,email, enrolledCourses{name, code, instructor, duration, timings})
+    teacher -> (name, age, timings, batch,address, assignments, qualifications, profilePic,phone,email, enrolledCourses{name, code, instructor, duration, timings})
 
 
 
-    student -> (name, age,email, phone, enrolledCourse, timings, batch, assignments, profilePic, guardianDetails{name, phone, relationship})
+    student -> (name, age,email, phone, enrolledCourse,address, timings, batch, assignments, profilePic, guardianDetails{name, phone, relationship})

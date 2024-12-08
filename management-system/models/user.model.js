@@ -1,5 +1,5 @@
-const mongoose = require("mongoose");
-const AutoIncrement = require("mongoose-sequence")(mongoose);
+import AutoIncrement from "mongoose-sequence";
+import mongoose from "mongoose";
 
 const BlogSchema = mongoose.Schema(
   {
@@ -28,7 +28,7 @@ const BlogSchema = mongoose.Schema(
       required: false,
     },
   },
-  { timestamps: true },
+  { timestamps: true }
 );
 BlogSchema.plugin(AutoIncrement, { inc_field: "num" });
 
