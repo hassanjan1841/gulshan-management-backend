@@ -1,9 +1,12 @@
-const express = require("express");
-const app = express();
-const mongoose = require("mongoose");
+import express from "express";
+import mongoose from "mongoose";
+import cors from "cors";
+import dotenv from "dotenv";
+import { userRoute } from "./management-system/routes/user.route.js";
 
-const cors = require("cors");
-const dotenv = require("dotenv").config();
+dotenv.config();
+
+const app = express();
 
 const PORT = process.env.PORT || 3002;
 const MONGO_URI = process.env.MONGO_URI;
@@ -22,12 +25,12 @@ app.use(
 
 // routes
 // app.use("/api/projects", projectRoute);
-// app.use("/api/blogs", blogRoute);
+app.use("/api/user", userRoute);
 
 // testing
-app.get("/", function (req, res) {
-  res.send("Hello World");
-});
+// app.get("/", function (req, res) {
+//   res.send("Hello World");
+// });
 
 // port listening
 
@@ -35,8 +38,8 @@ app.listen(PORT, () => {
   console.log("listening on port " + PORT);
 });
 
-mongoose.connect(process.env.MONGO_URI).then(() => {
+mongoose.connect(MONGO_URI).then(() => {
   console.log("connected");
 });
 
-module.exports = app;
+export default app;
