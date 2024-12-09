@@ -1,8 +1,11 @@
 import express from "express";
-import mongoose from "mongoose";
 import cors from "cors";
 import dotenv from "dotenv";
-import { userRoute } from "./management-system/routes/user.route.js";
+import { userRoute } from "./src/routes/userRoutes.js";
+import { authRoute } from "./src/routes/authRoutes.js";
+import { connectDB } from "./src/config/dbConnect.js";
+
+connectDB();
 
 dotenv.config();
 
@@ -24,8 +27,8 @@ app.use(
 );
 
 // routes
-// app.use("/api/projects", projectRoute);
 app.use("/api/user", userRoute);
+app.use("/api/auth", authRoute);
 
 // testing
 // app.get("/", function (req, res) {
@@ -36,10 +39,6 @@ app.use("/api/user", userRoute);
 
 app.listen(PORT, () => {
   console.log("listening on port " + PORT);
-});
-
-mongoose.connect(MONGO_URI).then(() => {
-  console.log("connected");
 });
 
 export default app;

@@ -34,20 +34,13 @@ const userSchema = new Schema(
     profilePic: {
       type: String, // URL or path to the profile picture
     },
-    createdAt: {
-      type: Date,
-      default: Date.now,
-    },
-    updatedAt: {
-      type: Date,
-      default: Date.now,
-    },
   },
+  { timestamps: true },
   { discriminatorKey: "role" }
 ); // discriminatorKey allows role-based extension
 
 // Create the base model
-const User = mongoose.model("User", userSchema);
+const User = mongoose.models.User || mongoose.model("User", userSchema);
 
 // Admin-specific schema
 const adminSchema = new Schema({

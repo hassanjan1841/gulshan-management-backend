@@ -1,4 +1,4 @@
-import { UserModal } from "../models/user.model.js";
+import { UserModal } from "../models/userModel.js";
 const { User } = UserModal;
 // Create a new user
 const createUser = async (req, res) => {
