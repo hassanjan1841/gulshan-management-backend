@@ -1,15 +1,11 @@
 import mongoose from "mongoose";
 const { Schema } = mongoose;
 
-// Define the base user schema
+// Define the base user schema (common fields)
 const userSchema = new Schema(
   {
-    name: {
+    full_name: {
       type: String,
-      required: true,
-    },
-    age: {
-      type: Number,
       required: true,
     },
     email: {
@@ -22,8 +18,23 @@ const userSchema = new Schema(
       required: true,
       unique: true,
     },
+    cnic: {
+      type: String,
+      required: true,
+      unique: true,
+    },
+    date_of_birth: {
+      type: Date,
+      required: true,
+    },
+    gender: {
+      type: String,
+      enum: ["Male", "Female", "Other"],
+      required: true,
+    },
     address: {
       type: String,
+      required: true,
     },
     role: {
       type: String,
@@ -35,90 +46,78 @@ const userSchema = new Schema(
       type: String, // URL or path to the profile picture
     },
   },
-  { timestamps: true },
-  { discriminatorKey: "role" }
-); // discriminatorKey allows role-based extension
+  { timestamps: true, discriminatorKey: "role" } // discriminatorKey allows role-based extension
+);
 
-// Create the base model
+// Create the base User model
 const User = mongoose.models.User || mongoose.model("User", userSchema);
 
-// Admin-specific schema
-const adminSchema = new Schema({
-  courses: [
-    {
-      type: Schema.Types.ObjectId,
-      ref: "Course",
-    },
-  ],
-  batches: [
-    {
-      type: Schema.Types.ObjectId,
-      ref: "Batch",
-    },
-  ],
-});
-
-// Teacher-specific schema
+// Teacher-specific schema (no student-specific fields)
 const teacherSchema = new Schema({
-  timings: [
-    {
-      type: String, // Example: 'Mon-Wed 10:00 AM - 1:00 PM'
-    },
-  ],
-  batch: {
-    type: Schema.Types.ObjectId,
-    ref: "Batch",
-  },
-  assignments: [
-    {
-      type: Schema.Types.ObjectId,
-      ref: "Assignment",
-    },
-  ],
   qualifications: [
     {
       type: String,
+      required: true,
     },
   ],
-  enrolledCourses: [
+  experience: {
+    type: Number,
+    default: 0,
+    required: true,
+  },
+  subjects: [
     {
-      name: String,
-      code: String,
-      instructor: { type: Schema.Types.ObjectId, ref: "User" },
-      duration: String,
-      timings: String,
+      type: String,
+      required: true,
     },
   ],
+  salary: {
+    type: Number,
+    default: 0,
+    required: true,
+  },
+  joining_date: {
+    type: Date,
+    required: true,
+    required: true,
+  },
+  office_location: {
+    type: String,
+    required: true,
+  },
 });
 
-// Student-specific schema
+// Student-specific schema (with fields specific to students)
 const studentSchema = new Schema({
-  enrolledCourses: [
-    {
-      type: Schema.Types.ObjectId,
-      ref: "Course",
-    },
-  ],
-  batch: {
-    type: Schema.Types.ObjectId,
-    ref: "Batch",
+  father_name: {
+    type: String,
   },
-  assignments: [
-    {
-      type: Schema.Types.ObjectId,
-      ref: "Assignment",
-    },
-  ],
-  guardianDetails: {
-    name: String,
-    phone: String,
-    relationship: String,
+  father_cnic: {
+    type: String,
+  },
+  last_qualification: {
+    type: String, // Reference to a qualifications collection (or string)
+  },
+  computer_proficiency: {
+    type: String,
+    enum: ["Basic", "Intermediate", "Advanced"],
+    default: "Basic",
+  },
+  country: {
+    type: String,
+  },
+  has_laptop: {
+    type: Boolean,
+  },
+  section: {
+    type: Schema.Types.ObjectId,
+    ref: "Section", // Assuming a Section model exists
   },
 });
 
 // Create discriminators for each role
-const Admin = User.discriminator("admin", adminSchema);
 const Teacher = User.discriminator("teacher", teacherSchema);
 const Student = User.discriminator("student", studentSchema);
 
-export const UserModal = { User, Admin, Teacher, Student };
+// Export the models
+export const UserModel = { User, Teacher, Student };

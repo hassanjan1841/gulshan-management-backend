@@ -7,10 +7,11 @@ import {
   updateUser,
   deleteUser,
 } from "../controllers/userController.js";
+import { validateCreateUser } from "../middleware/createUser.js";
 
 router.get("/", getAllUsers);
 router.get("/:id", getUser);
-router.post("/", createUser);
+router.post("/", validateCreateUser, createUser);
 router.put("/:id", updateUser);
 router.delete("/:id", deleteUser);
 
