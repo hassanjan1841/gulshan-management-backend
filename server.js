@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 import { userRoute } from "./src/routes/userRoutes.js";
 import { authRoute } from "./src/routes/authRoutes.js";
 import { connectDB } from "./src/config/dbConnect.js";
+import CourseRoute from "./src/routes/courseRoutes.js";
 
 connectDB();
 
@@ -29,6 +30,7 @@ app.use(
 // routes
 app.use("/api/user", userRoute);
 app.use("/api/auth", authRoute);
+app.use("/api/courses", CourseRoute);
 
 // testing
 // app.get("/", function (req, res) {

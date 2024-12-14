@@ -69,8 +69,7 @@ const updateUser = async (req, res) => {
   try {
     const { id } = req.params;
 
-    // Validate if ID is provided in the request body
-    const { name, age, email, phone, role } = req.body;
+    // Validate if ID is provided in the request body;
 
     // Ensure role is valid if present in the request
     if (role && !["admin", "teacher", "student"].includes(role)) {
