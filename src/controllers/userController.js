@@ -67,8 +67,8 @@ const getUser = async (req, res) => {
 // Update a specific user's details
 const updateUser = async (req, res) => {
   try {
-    const { id } = req.params;
-
+    const { id, role } = req.params;
+    console.log(req.body);
     // Validate if ID is provided in the request body;
 
     // Ensure role is valid if present in the request
