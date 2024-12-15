@@ -1,3 +1,5 @@
+import mongoose from "mongoose";
+
 const sectionSchema = new mongoose.Schema(
   {
     title: { type: String, required: true },
@@ -28,4 +30,4 @@ const sectionSchema = new mongoose.Schema(
 
 const Section = mongoose.model("Section", sectionSchema);
 
-export const sectionModel = Section;
+export default Section;

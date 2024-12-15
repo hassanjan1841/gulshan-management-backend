@@ -4,4 +4,4 @@ const router = express.Router();
 
 router.post("/login", login);
 
-export const authRoute = router;
+export default router;

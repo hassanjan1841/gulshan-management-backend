@@ -1,3 +1,5 @@
+import mongoose from "mongoose";
+
 const batchSchema = new mongoose.Schema(
   {
     title: { type: String, required: true },
@@ -13,4 +15,4 @@ const batchSchema = new mongoose.Schema(
 
 const Batch = mongoose.model("Batch", batchSchema);
 
-module.exports = Batch;
+export default Batch;

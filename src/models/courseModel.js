@@ -5,6 +5,8 @@ const courseSchema = new mongoose.Schema(
     title: { type: String, required: true },
     description: { type: String, required: true },
     duration: { type: String, required: true }, // e.g., '6 months'
+    fee: { type: Number, required: true },
+    level: { type: String, required: true }, // e.g., 'Beginner'
   },
   { timestamps: true }
 );

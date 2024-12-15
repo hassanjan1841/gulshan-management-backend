@@ -15,4 +15,4 @@ router.post("/", validateCreateUser, createUser);
 router.put("/:id", updateUser);
 router.delete("/:id", deleteUser);
 
-export const userRoute = router;
+export default router;
