@@ -109,9 +109,25 @@ const studentSchema = new Schema({
   has_laptop: {
     type: Boolean,
   },
+  course: {
+    type: Schema.Types.ObjectId,
+    ref: "Course",
+    required: true,
+  },
   section: {
     type: Schema.Types.ObjectId,
     ref: "Section", // Assuming a Section model exists
+  },
+  roll_number: {
+    type: String,
+  },
+  is_passed_out: {
+    type: Boolean,
+    default: false,
+  },
+  is_paid: {
+    type: Boolean,
+    default: false,
   },
 });
 

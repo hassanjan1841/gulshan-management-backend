@@ -42,6 +42,7 @@ export const getAllSections = async (req, res) => {
 export const getSectionById = async (req, res) => {
   try {
     const { id } = req.params;
+
     const section = await Section.findById(id)
       .populate("course")
       .populate("batch")
