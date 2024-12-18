@@ -4,6 +4,7 @@ import Course from "../models/courseModel.js";
 export const createCourse = async (req, res) => {
   try {
     const { title } = req.body;
+    console.log(req.decodedToken);
 
     // Check if the course title already exists
     const existingCourse = await Course.findOne({ title });

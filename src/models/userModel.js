@@ -136,4 +136,4 @@ const Teacher = User.discriminator("teacher", teacherSchema);
 const Student = User.discriminator("student", studentSchema);
 
 // Export the models
-export const UserModel = { User, Teacher, Student };
+export default User;

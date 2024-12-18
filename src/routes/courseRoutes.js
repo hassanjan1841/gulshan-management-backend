@@ -6,11 +6,13 @@ import {
   updateCourse,
   deleteCourse,
 } from "../controllers/courseController.js"; // Import controller functions
+import authenticateToken from "../middleware/verifyToken.js";
+import verifyRoles from "../middleware/verifyRoles.js";
 
 const router = express.Router();
 
 // Route to create a new course
-router.post("/", createCourse);
+router.post("/", authenticateToken, createCourse);
 
 // Route to get all courses
 router.get("/", getAllCourses);

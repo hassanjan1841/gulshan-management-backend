@@ -1,5 +1,4 @@
-import { UserModel } from "../models/userModel.js";
-const { User } = UserModel;
+import User from "../models/userModel.js";
 import { validationResult } from "express-validator";
 
 // Create a new user
@@ -64,25 +63,6 @@ const getUser = async (req, res) => {
   }
 };
 
-// Get a specific user by ID
-const getUserByEmail = async (req, res) => {
-  try {
-    console.log(req.body);
-    const { email } = req.body;
-    // Find user by ID
-    const user = await User.find({ email: email });
-
-    if (!user) {
-      return res.status(404).json({ message: "User not found." });
-    }
-
-    res.status(200).json(user);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: error.message });
-  }
-};
-
 // Update a specific user's details
 const updateUser = async (req, res) => {
   try {
@@ -133,11 +113,4 @@ const deleteUser = async (req, res) => {
   }
 };
 
-export {
-  getAllUsers,
-  createUser,
-  getUser,
-  getUserByEmail,
-  updateUser,
-  deleteUser,
-};
+export { getAllUsers, createUser, getUser, updateUser, deleteUser };
