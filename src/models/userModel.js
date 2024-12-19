@@ -132,8 +132,8 @@ const studentSchema = new Schema({
 });
 
 // Create discriminators for each role
-const Teacher = User.discriminator("teacher", teacherSchema);
-const Student = User.discriminator("student", studentSchema);
+const Teacher = User.discriminator("Teacher", teacherSchema);
+const Student = User.discriminator("Student", studentSchema);
 
 // Export the models
 export default User;
