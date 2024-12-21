@@ -6,9 +6,9 @@ const login = async (req, res) => {
     console.log(req.body);
     const { email } = req.body;
     // Find user by ID
-    const data = await User.find({ email: email });
+    const data = await User.findOne({ email: email });
     const user = data;
-    console.log("user in getUser",user);
+    console.log("user in getUser", user);
     if (!user) {
       return res.status(404).json({ message: "User not found." });
     }

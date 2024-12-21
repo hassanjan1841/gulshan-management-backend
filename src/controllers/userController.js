@@ -47,15 +47,17 @@ const getAllUsers = async (req, res) => {
 // Get a specific user by ID
 const getUser = async (req, res) => {
   try {
-    const { id } = req.params;
-    console.log("id", id);
-    // Find user by ID
-    const user = await User.findById(id);
+    // const { id } = req.params;
+    // console.log("id", id);/
 
+    const tokenUser = req.user;
+
+    console.log("tokenUser", tokenUser);
+    // Find user by ID
+    const user = await User.findById(tokenUser._doc._id);
     if (!user) {
       return res.status(404).json({ message: "User not found." });
     }
-    console.log("user in getUser", user, "end yaha par");
     res.status(200).json(user);
   } catch (error) {
     console.error(error);

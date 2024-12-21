@@ -10,8 +10,8 @@ import {
 import { validateCreateUser } from "../middleware/createUser.js";
 import authenticateToken from "../middleware/verifyToken.js";
 
-router.get("/", getAllUsers);
-router.get("/:id", authenticateToken, getUser);
+// router.get("/", getAllUsers);
+router.get("/", authenticateToken, getUser);
 
 router.post("/", validateCreateUser, createUser);
 router.put("/:id", updateUser);
