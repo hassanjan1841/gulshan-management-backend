@@ -30,14 +30,38 @@ const createUser = async (req, res) => {
 // Get all users (admin access only)
 const getAllUsers = async (req, res) => {
   try {
-    // Admins should be able to see all users
-    const users = await User.find({}).sort({ createdAt: -1 });
+    const { role, status } = req.query;
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const skip = (page - 1) * limit;
+
+    // Build filter query dynamically
+    const filter = {};
+    if (role) filter.role = role; // Filter by role (e.g., "admin", "teacher", "student")
+    if (status) filter.status = status; // Filter by status (e.g., "active", "inactive")
+
+    // Fetch paginated and filtered data
+    const users = await User.find(filter)
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(parseInt(limit));
+
+    const totalUsers = await User.countDocuments(filter);
 
     if (!users || users.length === 0) {
       return res.status(404).json({ message: "No users found." });
     }
 
-    res.status(200).json(users);
+    res.status(200).json({
+      users,
+      pagination: {
+        totalUsers,
+        currentPage: parseInt(page),
+        totalPages: Math.ceil(totalUsers / limit),
+        hasNextPage: page * limit < totalUsers,
+        hasPreviousPage: page > 1,
+      },
+    });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: error.message });
@@ -47,15 +71,15 @@ const getAllUsers = async (req, res) => {
 // Get a specific user by ID
 const getUser = async (req, res) => {
   try {
-    const { id } = req.params;
-    console.log("id", id);
+    // const { id } = req.params;
+    // console.log("id", id);
     // Find user by ID
-    const user = await User.findById(id);
-
+    const user = await User.findById(req.user._doc._id);
+    console.log("user in getUser in request=> ", req.user);
     if (!user) {
       return res.status(404).json({ message: "User not found." });
     }
-    console.log("user in getUser", user, "end yaha par");
+    console.log("user in getUser database=> ", user);
     res.status(200).json(user);
   } catch (error) {
     console.error(error);
