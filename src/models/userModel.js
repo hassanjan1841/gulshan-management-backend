@@ -46,7 +46,7 @@ const userSchema = new Schema(
       type: String, // URL or path to the profile picture
     },
     age: {
-      type: String,
+      type: Number,
       required: true,
     },
   },

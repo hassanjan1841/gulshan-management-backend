@@ -48,15 +48,15 @@ const getAllUsers = async (req, res) => {
 const getUser = async (req, res) => {
   try {
     const { id } = req.params;
-
+    console.log("id", id);
     // Find user by ID
     const user = await User.findById(id);
 
     if (!user) {
       return res.status(404).json({ message: "User not found." });
     }
-    console.log("user in getUser", user);
-    res.status(200).json(user, "end yaha par");
+    console.log("user in getUser", user, "end yaha par");
+    res.status(200).json(user);
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: error.message });
