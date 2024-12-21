@@ -55,8 +55,8 @@ const getUser = async (req, res) => {
     if (!user) {
       return res.status(404).json({ message: "User not found." });
     }
-
-    res.status(200).json(user);
+    console.log("user in getUser", user);
+    res.status(200).json(user, "end yaha par");
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: error.message });
@@ -66,22 +66,23 @@ const getUser = async (req, res) => {
 // Update a specific user's details
 const updateUser = async (req, res) => {
   try {
-    const { id, role } = req.params;
-    console.log(req.body);
+    const { id } = req.params;
+    console.log("updateuser body", req.body);
     // Validate if ID is provided in the request body;
 
     // Ensure role is valid if present in the request
-    if (role && !["admin", "teacher", "student"].includes(role)) {
-      return res.status(400).json({
-        message:
-          "Invalid role provided. Allowed roles are admin, teacher, or student.",
-      });
-    }
+    // if (role && !["admin", "teacher", "student"].includes(role)) {
+    //   return res.status(400).json({
+    //     message:
+    //       "Invalid role provided. Allowed roles are admin, teacher, or student.",
+    //   });
+    // }
 
     // Update the user by ID
     const updatedUser = await User.findByIdAndUpdate(id, req.body, {
       new: true,
-    });
+    }).exec();
+    console.log("updatedUser", updatedUser);
 
     if (!updatedUser) {
       return res.status(404).json({ message: "User not found." });

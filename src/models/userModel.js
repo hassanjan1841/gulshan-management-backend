@@ -45,6 +45,10 @@ const userSchema = new Schema(
     profilePic: {
       type: String, // URL or path to the profile picture
     },
+    age: {
+      type: String,
+      required: true,
+    },
   },
   { timestamps: true, discriminatorKey: "role" } // discriminatorKey allows role-based extension
 );
