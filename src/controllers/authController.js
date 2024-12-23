@@ -9,14 +9,14 @@ const login = async (req, res) => {
     const data = await User.findOne({ email: email });
     const user = data;
     console.log("user in getUser", user);
+    if (!user) {
+      return res.status(404).json({ message: "User not found." });
+    }
     const token = generateAccessToken(user);
     if (!token) {
       return res.status(401).json({ message: "Invalid credentials." });
     }
     console.log("token", token);
-    if (!user) {
-      return res.status(404).json({ message: "User not found." });
-    }
 
     res.status(200).json({ user, token });
   } catch (error) {

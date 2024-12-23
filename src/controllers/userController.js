@@ -61,16 +61,7 @@ const getAllUsers = async (req, res) => {
       return res.status(404).json({ message: "No users found." });
     }
 
-    res.status(200).json({
-      users,
-      pagination: {
-        totalUsers,
-        currentPage: parseInt(page),
-        totalPages: Math.ceil(totalUsers / limit),
-        hasNextPage: page * limit < totalUsers,
-        hasPreviousPage: page > 1,
-      },
-    });
+    res.status(200).json(users);
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: error.message });
@@ -81,14 +72,16 @@ const getAllUsers = async (req, res) => {
 const getUser = async (req, res) => {
   try {
     // const { id } = req.params;
-    // console.log("id", id);
+    // console.log("id", id);/
+
+    const tokenUser = req.user;
+
+    console.log("tokenUser", tokenUser);
     // Find user by ID
-    const user = await User.findById(req.user._doc._id);
-    console.log("user in getUser in request=> ", req.user);
+    const user = await User.findById(tokenUser._doc._id);
     if (!user) {
       return res.status(404).json({ message: "User not found." });
     }
-    console.log("user in getUser database=> ", user);
     res.status(200).json(user);
   } catch (error) {
     console.error(error);
