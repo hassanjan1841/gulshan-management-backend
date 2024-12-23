@@ -54,7 +54,7 @@ const getAllUsers = async (req, res) => {
         ],
       });
 
-    console.log("users in getallusers+>", users);
+    // console.log("users in getallusers+>", users);
     const totalUsers = await User.countDocuments(filter);
 
     if (!users || users.length === 0) {
@@ -93,7 +93,13 @@ const getUser = async (req, res) => {
 const updateUser = async (req, res) => {
   try {
     const { id } = req.params;
-    console.log("updateuser body", req.body);
+    const { qualifications } = req.body;
+
+    if (!qualifications || !Array.isArray(qualifications)) {
+      return res
+        .status(400)
+        .json({ message: "Qualifications must be an array of strings." });
+    }
     // Validate if ID is provided in the request body;
 
     // Ensure role is valid if present in the request

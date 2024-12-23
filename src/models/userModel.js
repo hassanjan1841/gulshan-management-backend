@@ -58,23 +58,19 @@ const User = mongoose.models.User || mongoose.model("User", userSchema);
 
 // Teacher-specific schema (no student-specific fields)
 const teacherSchema = new Schema({
-  qualifications: [
-    {
-      type: String,
-      required: true,
-    },
-  ],
+  qualifications: {
+    type: [String], // Changed to String
+    required: true,
+  },
   experience: {
     type: Number,
     default: 0,
     required: true,
   },
-  subjects: [
-    {
-      type: String,
-      required: true,
-    },
-  ],
+  subjects: {
+    type: String, // Changed to String
+    required: true,
+  },
   salary: {
     type: Number,
     default: 0,
@@ -83,11 +79,27 @@ const teacherSchema = new Schema({
   joining_date: {
     type: Date,
     required: true,
-    required: true,
   },
   office_location: {
     type: String,
     required: true,
+  },
+  is_on_leave: {
+    type: Boolean,
+    default: false,
+  },
+  leave_start_date: {
+    type: Date,
+  },
+  leave_end_date: {
+    type: Date,
+  },
+  leave_reason: {
+    type: String,
+  },
+  is_blocked: {
+    type: Boolean,
+    default: true,
   },
 });
 

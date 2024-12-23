@@ -7,13 +7,16 @@ import {
   updateUser,
   deleteUser,
 } from "../controllers/userController.js";
-import { validateCreateUser } from "../middleware/createUser.js";
+import {
+  
+  validateStudent,
+} from "../middleware/createUser.js";
 import authenticateToken from "../middleware/verifyToken.js";
 
 router.get("/", getAllUsers);
 router.get("/me", authenticateToken, getUser);
 
-router.post("/", validateCreateUser, createUser);
+router.post("/", validateStudent, createUser);
 router.put("/:id", updateUser);
 router.delete("/:id", deleteUser);
 
