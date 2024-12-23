@@ -114,12 +114,12 @@ const studentSchema = new Schema({
     type: Boolean,
   },
   course: {
-    type: Schema.Types.ObjectId,
+    type: mongoose.Schema.Types.ObjectId,
     ref: "Course",
     required: true,
   },
   section: {
-    type: Schema.Types.ObjectId,
+    type: mongoose.Schema.Types.ObjectId,
     ref: "Section", // Assuming a Section model exists
   },
   roll_number: {

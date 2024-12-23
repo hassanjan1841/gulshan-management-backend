@@ -44,8 +44,17 @@ const getAllUsers = async (req, res) => {
     const users = await User.find(filter)
       .sort({ createdAt: -1 })
       .skip(skip)
-      .limit(parseInt(limit));
+      .limit(parseInt(limit))
+      .populate({
+        path: "section",
+        populate: [
+          { path: "course", model: "Course" },
+          { path: "batch", model: "Batch" },
+          { path: "teacher", model: "User" },
+        ],
+      });
 
+    console.log("users in getallusers+>", users);
     const totalUsers = await User.countDocuments(filter);
 
     if (!users || users.length === 0) {
