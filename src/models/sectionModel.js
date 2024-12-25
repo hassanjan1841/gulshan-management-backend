@@ -24,6 +24,11 @@ const sectionSchema = new mongoose.Schema(
       enum: ["pending", "ongoing", "merged", "finished"],
       default: "pending",
     },
+    days: { type: String, required: true }, // e.g., 'MWF', 'TTS'
+    startTime: { type: String, required: true }, // e.g., '09:00:00'
+    endTime: { type: String, required: true }, // e.g., '11:00:00'
+    room: { type: String, required: true },
+    isActive: { type: Boolean, default: true },
   },
   { timestamps: true }
 );

@@ -87,3 +87,24 @@ export const deleteBatch = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
+// READ all Batches by Course ID
+export const getBatchesByCourseId = async (req, res) => {
+  try {
+    const { courseId } = req.params;
+    const batches = await Batch.find({ course: courseId }).populate(
+      "course",
+      "title"
+    );
+
+    if (!batches || batches.length === 0) {
+      return res
+        .status(404)
+        .json({ message: "No batches found for this course." });
+    }
+
+    res.status(200).json(batches);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};

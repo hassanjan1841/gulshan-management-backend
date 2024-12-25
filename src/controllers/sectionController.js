@@ -3,14 +3,23 @@ import Section from "../models/sectionModel.js";
 // CREATE a new Section
 export const createSection = async (req, res) => {
   try {
-    const { title } = req.body;
+    const { days, startTime, endTime, room, instructorId } = req.body;
+
+    const conflict = await Section.findOne({
+      days,
+      $or: [
+        { room }, // Same room
+        { instructorId }, // Same instructor
+      ],
+      $and: [
+        { startTime: { $lt: endTime } }, // Check overlapping
+        { endTime: { $gt: startTime } },
+      ],
+    });
 
     // Check if the Section title already exists
-    const existingSection = await Section.findOne({ title });
-    if (existingSection) {
-      return res
-        .status(400)
-        .json({ message: "Section with this title already exists." });
+    if (conflict) {
+      return res.status(400).json({ message: "Section already exists." });
     }
 
     const section = new Section(req.body);

@@ -5,6 +5,7 @@ import {
   getBatchById,
   updateBatch,
   deleteBatch,
+  getBatchesByCourseId,
 } from "../controllers/batchController.js";
 
 const router = express.Router();
@@ -23,5 +24,8 @@ router.put("/:id", updateBatch);
 
 // Route to delete a Batch by ID
 router.delete("/:id", deleteBatch);
+
+// Route to get all Batches by Course ID
+router.get("/course/:courseId", getBatchesByCourseId);
 
 export default router;
