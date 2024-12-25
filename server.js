@@ -15,7 +15,6 @@ const app = express();
 
 const PORT = process.env.PORT || 3002;
 
-
 // middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));

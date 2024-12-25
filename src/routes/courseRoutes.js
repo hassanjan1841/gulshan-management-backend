@@ -7,7 +7,7 @@ import {
   deleteCourse,
 } from "../controllers/courseController.js"; // Import controller functions
 import authenticateToken from "../middleware/verifyToken.js";
-import verifyRoles from "../middleware/verifyRoles.js";
+// import verifyRoles from "../middleware/verifyRoles.js";
 
 const router = express.Router();
 
