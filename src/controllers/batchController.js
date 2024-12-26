@@ -1,13 +1,15 @@
 import Batch from "../models/batchModel.js";
-
+import Course from "../models/courseModel.js";
 // CREATE a new Batch
 export const createBatch = async (req, res) => {
   try {
-    const { title } = req.body;
+    const { course, title } = req.body;
 
     // Check if the batch title already exists
-    const existingBatch = await Batch.findOne({ title });
-    if (existingBatch) {
+    const existingBatch = await Batch.findOne({ course });
+    console.log("existingBatch", existingBatch);
+    
+    if (existingBatch && existingBatch.title === title) {
       return res
         .status(400)
         .json({ message: "Batch with this title already exists." });
