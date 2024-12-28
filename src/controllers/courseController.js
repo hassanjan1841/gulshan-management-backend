@@ -1,4 +1,6 @@
+import Batch from "../models/batchModel.js";
 import Course from "../models/courseModel.js";
+import { Student, Teacher } from "../models/userModel.js";
 
 // CREATE a new course
 export const createCourse = async (req, res) => {
@@ -60,7 +62,18 @@ export const getCourseById = async (req, res) => {
       return res.status(404).json({ message: "Course not found" });
     }
 
-    res.status(200).json(course);
+    // Assuming you have separate models for instructors, students, and batches
+
+    const instructors = await Teacher.countDocuments({ course: id });
+    const students = await Student.countDocuments({ course: id });
+    const batches = await Batch.countDocuments({ course: id });
+
+    res.status(200).json({
+      course,
+      instructors,
+      students,
+      batches,
+    });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

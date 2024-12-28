@@ -53,8 +53,8 @@ export const validateStudent = [
     .withMessage("Has laptop must be a boolean value"),
   body("section")
     .optional()
-    .isMongoId()
-    .withMessage("Section must be a valid MongoDB ObjectId"),
+    .isObject()
+    .withMessage("Section must be a valid Object"),
   body("role")
     .isIn(["admin", "teacher", "student"])
     .withMessage("Role must be one of admin, teacher, or student"),

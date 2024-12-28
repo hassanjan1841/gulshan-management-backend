@@ -1,4 +1,4 @@
-import User from "../models/userModel.js";
+import {User} from "../models/userModel.js";
 import { generateAccessToken } from "../helpers/generateToken.js";
 // Get a specific user by ID
 const login = async (req, res) => {

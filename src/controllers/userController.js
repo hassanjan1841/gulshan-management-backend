@@ -1,27 +1,25 @@
-import User from "../models/userModel.js";
+import { User, Teacher, Student } from "../models/userModel.js";
 import { validationResult } from "express-validator";
 
 // Create a new user
 const createUser = async (req, res) => {
   try {
-    // Check for validation errors
     const errors = validationResult(req);
 
-    // If there are validation errors, return them
     if (!errors.isEmpty()) {
       return res.status(400).json({
         success: false,
-        errors: errors.array(), // Return the validation errors
+        errors: errors.array(),
       });
     }
 
-    // Create the user
-    const user = await User.create(req.body);
+    const { role } = req.body;
+    const Model = role === "teacher" ? Teacher : Student;
 
-    // Return success response
+    const user = await Model.create(req.body);
+
     res.status(201).json({ success: true, user });
   } catch (error) {
-    // Handle errors such as duplicate email or phone
     console.error(error);
     res.status(500).json({ message: error.message });
   }
@@ -30,32 +28,26 @@ const createUser = async (req, res) => {
 // Get all users (admin access only)
 const getAllUsers = async (req, res) => {
   try {
-    const { role, status } = req.query;
+    const { role, status, batch, teacher, course } = req.query;
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 10;
     const skip = (page - 1) * limit;
 
-    // Build filter query dynamically
     const filter = {};
-    if (role) filter.role = role; // Filter by role (e.g., "admin", "teacher", "student")
-    if (status) filter.status = status; // Filter by status (e.g., "active", "inactive")
+    if (role) filter.role = role;
+    if (status) filter.is_passed_out = status == "false" ? false : true;
+    if (!batch == "undefined") filter["section.batch._id"] = batch;
+    if (!teacher == "undefined") filter["section.teacher._id"] = teacher;
+    if (!course == "undefined") filter["course"] = course;
+    console.log("filter", filter);
 
-    // Fetch paginated and filtered data
-    const users = await User.find(filter)
+    const Model = role === "teacher" ? Teacher : Student;
+    const users = await Model.find(role === "teacher" ? {} : filter)
       .sort({ createdAt: -1 })
       .skip(skip)
-      .limit(parseInt(limit))
-      .populate({
-        path: "section",
-        populate: [
-          { path: "course", model: "Course" },
-          { path: "batch", model: "Batch" },
-          { path: "teacher", model: "User" },
-        ],
-      });
+      .limit(parseInt(limit));
 
-    // console.log("users in getallusers+>", users);
-    const totalUsers = await User.countDocuments(filter);
+    const totalUsers = await Model.countDocuments(filter);
 
     if (!users || users.length === 0) {
       return res.status(404).json({ message: "No users found." });
@@ -71,14 +63,10 @@ const getAllUsers = async (req, res) => {
 // Get a specific user by ID
 const getUser = async (req, res) => {
   try {
-    // const { id } = req.params;
-    // console.log("id", id);/
-
     const tokenUser = req.user;
+    const Model = tokenUser.role === "teacher" ? Teacher : Student;
 
-    console.log("tokenUser", tokenUser);
-    // Find user by ID
-    const user = await User.findById(tokenUser._doc._id);
+    const user = await Model.findById(tokenUser._doc._id);
     if (!user) {
       return res.status(404).json({ message: "User not found." });
     }
@@ -93,25 +81,10 @@ const getUser = async (req, res) => {
 const updateUser = async (req, res) => {
   try {
     const { id } = req.params;
-    const { qualifications } = req.body;
+    const { role } = req.body;
+    const Model = role === "teacher" ? Teacher : Student;
 
-    if (!qualifications || !Array.isArray(qualifications)) {
-      return res
-        .status(400)
-        .json({ message: "Qualifications must be an array of strings." });
-    }
-    // Validate if ID is provided in the request body;
-
-    // Ensure role is valid if present in the request
-    // if (role && !["admin", "teacher", "student"].includes(role)) {
-    //   return res.status(400).json({
-    //     message:
-    //       "Invalid role provided. Allowed roles are admin, teacher, or student.",
-    //   });
-    // }
-
-    // Update the user by ID
-    const updatedUser = await User.findByIdAndUpdate(id, req.body, {
+    const updatedUser = await Model.findByIdAndUpdate(id, req.body, {
       new: true,
     }).exec();
     console.log("updatedUser", updatedUser);
@@ -131,9 +104,10 @@ const updateUser = async (req, res) => {
 const deleteUser = async (req, res) => {
   try {
     const { id } = req.params;
+    const { role } = req.body;
+    const Model = role === "teacher" ? Teacher : Student;
 
-    // Delete the user by ID
-    const deletedUser = await User.findByIdAndDelete(id);
+    const deletedUser = await Model.findByIdAndDelete(id);
 
     if (!deletedUser) {
       return res.status(404).json({ message: "User not found." });

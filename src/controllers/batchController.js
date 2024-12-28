@@ -26,6 +26,7 @@ export const createBatch = async (req, res) => {
 // READ all Batches
 export const getAllBatches = async (req, res) => {
   try {
+    
     const batch = await Batch.find().populate("course");
 
     if (!batch || batch.length === 0) {

@@ -131,8 +131,8 @@ const studentSchema = new Schema({
     required: true,
   },
   section: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "Section", // Assuming a Section model exists
+    type: Object,
+    required: true,
   },
   roll_number: {
     type: String,
@@ -146,10 +146,9 @@ const studentSchema = new Schema({
     default: false,
   },
 });
-
 // Create discriminators for each role
 const Teacher = User.discriminator("teacher", teacherSchema);
 const Student = User.discriminator("student", studentSchema);
 
 // Export the models
-export default User;
+export { User, Teacher, Student };
