@@ -12,7 +12,7 @@ export const createBatch = async (req, res) => {
     if (existingBatch && existingBatch.title === title) {
       return res
         .status(400)
-        .json({ message: "Batch with this title already exists." });
+        .json({ message: "Batch with this course already exists." });
     }
 
     const batch = new Batch(req.body);
@@ -26,13 +26,16 @@ export const createBatch = async (req, res) => {
 // READ all Batches
 export const getAllBatches = async (req, res) => {
   try {
-    
-    const batch = await Batch.find().populate("course");
-
-    if (!batch || batch.length === 0) {
-      return res.status(404).json({ message: "No batches found." });
+    const {course} = req.query
+    const query = {}
+    if(course){
+      query.course = course
     }
-    res.status(200).json(batch);
+    const batches = await Batch.find(query).populate("course");
+    if (!batches || batches.length === 0) {
+      return res.status(404).json({error: true, message: "No batches found."});
+    }
+    res.status(200).json({error: false, batches: batches});
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

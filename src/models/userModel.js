@@ -131,7 +131,8 @@ const studentSchema = new Schema({
     required: true,
   },
   section: {
-    type: Object,
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Section",
     required: true,
   },
   roll_number: {
