@@ -48,10 +48,10 @@ export const getBatchById = async (req, res) => {
     const batch = await Batch.findById(id).populate("course");
 
     if (!batch) {
-      return res.status(404).json({ message: "Batch not found" });
+      return res.status(404).json({error: true, message: "Batch not found" });
     }
 
-    res.status(200).json(batch);
+    res.status(200).json({error: false, batch: batch});
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

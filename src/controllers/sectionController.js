@@ -33,15 +33,20 @@ export const createSection = async (req, res) => {
 // READ all sections
 export const getAllSections = async (req, res) => {
   try {
-    const section = await Section.find()
+    const {batch} = req.query
+    const query = {}
+    if(batch){
+      query.batch = batch
+    }
+    const section = await Section.find(query)
       .populate("course")
       .populate("batch")
       .populate("teacher");
 
     if (!section || section.length === 0) {
-      return res.status(404).json({ message: "No sections found." });
+      return res.status(404).json({error: true, message: "No sections found." });
     }
-    res.status(200).json(section);
+    res.status(200).json({error: false, sections: section});
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
