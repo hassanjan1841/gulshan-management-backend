@@ -28,7 +28,7 @@ const createUser = async (req, res) => {
 // Get all users (admin access only)
 const getAllUsers = async (req, res) => {
   try {
-    const { role, status, batch, teacher, course } = req.query;
+    const { role, status, batch, teacher, course, search } = req.query;
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 10;
     const skip = (page - 1) * limit;
@@ -41,12 +41,28 @@ const getAllUsers = async (req, res) => {
       filter["section.teacher._id"] = teacher;
     if (course && course !== "undefined") filter["course"] = course;
     console.log("filter", filter);
+    if (search && search !== "undefined") {
+      filter["full_name"] = { $regex: search, $options: "i" };
+    }
 
     const Model = role === "teacher" ? Teacher : Student;
     const users = await Model.find(role === "teacher" ? {} : filter)
       .sort({ createdAt: -1 })
       .skip(skip)
-      .limit(limit);
+      .limit(limit)
+      .populate(
+        role === "teacher"
+          ? ""
+          : {
+              path: "section",
+              populate: [
+                { path: "batch" },
+                { path: "teacher" },
+                { path: "course" },
+              ],
+            }
+      )
+      .populate({ path: "course", strictPopulate: false });
 
     const totalUsers = await Model.countDocuments(
       role === "teacher" ? {} : filter

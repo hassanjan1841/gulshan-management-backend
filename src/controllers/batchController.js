@@ -8,7 +8,7 @@ export const createBatch = async (req, res) => {
     // Check if the batch title already exists
     const existingBatch = await Batch.findOne({ course });
     console.log("existingBatch", existingBatch);
-    
+
     if (existingBatch && existingBatch.title === title) {
       return res
         .status(400)
@@ -26,16 +26,34 @@ export const createBatch = async (req, res) => {
 // READ all Batches
 export const getAllBatches = async (req, res) => {
   try {
-    const {course} = req.query
-    const query = {}
-    if(course){
-      query.course = course
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const skip = (page - 1) * limit;
+    const { course } = req.query;
+    const query = {};
+
+    if (course && course !== "undefined") {
+      query.course = course;
     }
-    const batches = await Batch.find(query).populate("course");
+
+    const batches = await Batch.find(query)
+      .populate("course")
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit);
+
+    const totalBatches = await Batch.countDocuments(query);
+
     if (!batches || batches.length === 0) {
-      return res.status(404).json({error: true, message: "No batches found."});
+      return res.status(404).json({ message: "No batches found." });
     }
-    res.status(200).json({error: false, batches: batches});
+
+    res.status(200).json({
+      batches,
+      totalBatches,
+      totalPages: Math.ceil(totalBatches / limit),
+      currentPage: page,
+    });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -48,10 +66,10 @@ export const getBatchById = async (req, res) => {
     const batch = await Batch.findById(id).populate("course");
 
     if (!batch) {
-      return res.status(404).json({error: true, message: "Batch not found" });
+      return res.status(404).json({ error: true, message: "Batch not found" });
     }
 
-    res.status(200).json({error: false, batch: batch});
+    res.status(200).json({ error: false, batch: batch });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
