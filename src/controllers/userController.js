@@ -36,24 +36,34 @@ const getAllUsers = async (req, res) => {
     const filter = {};
     if (role) filter.role = role;
     if (status) filter.is_passed_out = status == "false" ? false : true;
-    if (!batch == "undefined") filter["section.batch._id"] = batch;
-    if (!teacher == "undefined") filter["section.teacher._id"] = teacher;
-    if (!course == "undefined") filter["course"] = course;
+    if (batch && batch !== "undefined") filter["section.batch._id"] = batch;
+    if (teacher && teacher !== "undefined")
+      filter["section.teacher._id"] = teacher;
+    if (course && course !== "undefined") filter["course"] = course;
     console.log("filter", filter);
 
     const Model = role === "teacher" ? Teacher : Student;
     const users = await Model.find(role === "teacher" ? {} : filter)
       .sort({ createdAt: -1 })
       .skip(skip)
-      .limit(parseInt(limit));
+      .limit(limit);
 
-    const totalUsers = await Model.countDocuments(filter);
+    const totalUsers = await Model.countDocuments(
+      role === "teacher" ? {} : filter
+    );
+    const totalPages = Math.ceil(totalUsers / limit);
 
     if (!users || users.length === 0) {
       return res.status(404).json({ message: "No users found." });
     }
 
-    res.status(200).json(users);
+    res.status(200).json({
+      success: true,
+      users,
+      page,
+      totalPages,
+      totalUsers,
+    });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: error.message });
