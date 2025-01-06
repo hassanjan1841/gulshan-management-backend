@@ -115,3 +115,27 @@ export const deleteCourse = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
+export const getCoursesByCityAndCountry = async (req, res) => {
+  try {
+    const { city, country } = req.query;
+
+    const batches = await Batch.find({
+      city,
+      country,
+      admissionOpen: true,
+    }).populate("course");
+
+    if (!batches || batches.length === 0) {
+      return res.status(404).json({
+        message: "No batches found for the specified city and country.",
+      });
+    }
+
+    const courses = batches.map((batch) => batch.course);
+
+    res.status(200).json({ courses });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
