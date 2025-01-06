@@ -41,12 +41,15 @@ export const getAllBatches = async (req, res) => {
     if (city && country) {
       return getCoursesByCityAndCountry(req, res);
     }
-
-    if (course && course !== "undefined") {
-      query.course = course;
+    if (course && city && country) {
+      return getBranchesByCountryCityAndCourse(req, res);
     }
 
-    const batches = await Batch.find(query)
+    // if (course && course !== "undefined") {
+    //   query.course = course;
+    // }
+
+    const batches = await Batch.find({})
       .populate("course")
       .sort({ createdAt: -1 })
       .skip(skip)
@@ -172,8 +175,11 @@ export const getAllCountriesFromBatchWithAdmissionOpen = async (req, res) => {
 export const getAllCitiesByCountry = async (req, res) => {
   try {
     const { country } = req.query;
-    console.log("country in getallcities=>", country);
-    const batches = await Batch.find({ country }).populate("course");
+    // console.log("country in getallcities=>", country);
+    const batches = await Batch.find({
+      country,
+      is_admission_open: true,
+    }).populate("course");
 
     if (!batches || batches.length === 0) {
       return res.status(404).json({
@@ -183,7 +189,7 @@ export const getAllCitiesByCountry = async (req, res) => {
 
     const cities = batches.map((batch) => batch.city);
     const uniqueCities = [...new Set(cities)]; // Return unique cities
-    console.log("uniqueCities", uniqueCities);
+    // console.log("uniqueCities", uniqueCities);
 
     res.status(200).json({ cities: uniqueCities });
   } catch (error) {
@@ -199,7 +205,7 @@ export const getCoursesByCityAndCountry = async (req, res) => {
       country,
       is_admission_open: true,
     }).populate("course");
-    console.log(batches);
+    // console.log(batches);
     if (!batches || batches.length === 0) {
       return res.status(404).json({
         message: "No batches found for the specified city and country.",
@@ -209,6 +215,32 @@ export const getCoursesByCityAndCountry = async (req, res) => {
     const courses = batches.map((batch) => batch.course);
 
     res.status(200).json({ courses });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+// Function to get branches by country, city, and course
+export const getBranchesByCountryCityAndCourse = async (req, res) => {
+  try {
+    const { country, city, course } = req.query;
+    const batches = await Batch.find({
+      country,
+      city,
+      course,
+      is_admission_open: true,
+    }).populate("course");
+
+    if (!batches || batches.length === 0) {
+      return res.status(404).json({
+        message:
+          "No branches found for the specified country, city, and course.",
+      });
+    }
+
+    const branches = batches.map((batch) => batch.branch);
+    const uniqueBranches = [...new Set(branches)]; // Return unique branches
+
+    res.status(200).json({ branches: uniqueBranches });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
