@@ -16,10 +16,10 @@ export const validateStudent = [
   body("cnic")
     .notEmpty()
     .withMessage("CNIC is required")
-    .isLength({ min: 13, max: 13 })
+    .isLength({ min: 13, max: 15 })
     .withMessage("CNIC must be exactly 13 characters"),
   body("date_of_birth")
-    .isDate()
+    .isDate({ format: "YYYY-MM-DD" })
     .withMessage("Date of birth must be a valid date"),
   body("gender")
     .isIn(["Male", "Female", "Other"])
@@ -35,26 +35,29 @@ export const validateStudent = [
     .withMessage("Father's name must be a string"),
   body("father_cnic")
     .optional()
-    .isLength({ min: 13, max: 13 })
+    .isLength({ min: 13, max: 15 })
     .withMessage("Father's CNIC must be exactly 13 characters"),
   body("last_qualification")
     .optional()
     .isString()
     .withMessage("Last qualification must be a string"),
   body("computer_proficiency")
-    .isIn(["Basic", "Intermediate", "Advanced"])
+    .isIn(["None", "Beginner", "Intermediate", "Advanced"])
     .withMessage(
       "Computer proficiency must be Basic, Intermediate, or Advanced"
     ),
   body("country").optional().isString().withMessage("Country must be a string"),
   body("has_laptop")
     .optional()
-    .isBoolean()
-    .withMessage("Has laptop must be a boolean value"),
+    .isString()
+    .withMessage("Has laptop must be a yes or no"),
   body("section")
     .optional()
     .isObject()
     .withMessage("Section must be a valid Object"),
+  body("profilePic")
+    .isString()
+    .withMessage("plz upload a profile add must be a string"),
   body("role")
     .isIn(["admin", "teacher", "student"])
     .withMessage("Role must be one of admin, teacher, or student"),

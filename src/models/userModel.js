@@ -40,7 +40,6 @@ const userSchema = new Schema(
       type: String,
       enum: ["admin", "teacher", "student"],
       default: "student",
-      required: true,
     },
     profilePic: {
       type: String, // URL or path to the profile picture
@@ -116,31 +115,42 @@ const studentSchema = new Schema({
   },
   computer_proficiency: {
     type: String,
-    enum: ["Basic", "Intermediate", "Advanced"],
+    enum: ["None", "Beginner", "Intermediate", "Advanced"],
     default: "Basic",
   },
-  country: {
-    type: String,
+  on_register: {
+    country: {
+      type: String,
+    },
+    city: {
+      type: String,
+    },
   },
   has_laptop: {
-    type: Boolean,
+    type: String,
   },
-  course: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "Course",
-    required: true,
-  },
+  courses: [
+    {
+      batch: { type: mongoose.Schema.Types.ObjectId, ref: "Batch" },
+      course: { type: mongoose.Schema.Types.ObjectId, ref: "Course" },
+      status: {
+        type: String,
+        enum: ["ongoing", "completed"],
+        default: "ongoing",
+      }, // Status for each course
+      completionDate: { type: Date, default: null }, // Optional: when the course was completed
+      is_quiz_passed: {
+        type: Boolean,
+        default: false,
+      },
+    },
+  ],
   section: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Section",
-    required: true,
   },
   roll_number: {
     type: String,
-  },
-  is_passed_out: {
-    type: Boolean,
-    default: false,
   },
   is_paid: {
     type: Boolean,

@@ -16,7 +16,10 @@ const createUser = async (req, res) => {
     const { role } = req.body;
     const Model = role === "teacher" ? Teacher : Student;
 
-    const user = await Model.create(req.body);
+    const user = await Model.create({
+      ...req.body,
+      date_of_birth: new Date(req.body.date_of_birth),
+    });
 
     res.status(201).json({ success: true, user });
   } catch (error) {
@@ -52,7 +55,6 @@ const getAllUsers = async (req, res) => {
       role === "teacher" ? {} : filter
     );
     const totalPages = Math.ceil(totalUsers / limit);
-
     if (!users || users.length === 0) {
       return res.status(404).json({ message: "No users found." });
     }
