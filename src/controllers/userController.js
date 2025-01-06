@@ -65,7 +65,7 @@ const getAllUsers = async (req, res) => {
               ],
             }
       )
-      .populate({ path: "course", strictPopulate: false });
+      .populate({ path: "courses", populate: { path: "course" } });
 
     const totalUsers = await Model.countDocuments(
       role === "teacher" ? {} : filter
