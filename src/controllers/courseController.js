@@ -30,6 +30,12 @@ export const getAllCourses = async (req, res) => {
     const limit = parseInt(req.query.limit) || 10;
     const skip = (page - 1) * limit;
 
+    const { city, country } = req.query;
+    // console.log("city", city);
+    if (city || country) {
+      return getCoursesByCityAndCountry(req, res);
+    }
+
     const courses = await Course.find()
       .sort({ createdAt: -1 })
       .skip(skip)
@@ -119,13 +125,13 @@ export const deleteCourse = async (req, res) => {
 export const getCoursesByCityAndCountry = async (req, res) => {
   try {
     const { city, country } = req.query;
-
+    // console.log("city", city);
     const batches = await Batch.find({
       city,
       country,
-      admissionOpen: true,
+      is_admission_open: true,
     }).populate("course");
-
+    console.log(batches);
     if (!batches || batches.length === 0) {
       return res.status(404).json({
         message: "No batches found for the specified city and country.",

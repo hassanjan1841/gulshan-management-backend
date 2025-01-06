@@ -7,7 +7,7 @@ export const createBatch = async (req, res) => {
 
     // Check if the batch title already exists
     const existingBatch = await Batch.findOne({ course });
-    console.log("existingBatch", existingBatch);
+    // console.log("existingBatch", existingBatch);
 
     if (existingBatch && existingBatch.title === title) {
       return res
@@ -29,8 +29,14 @@ export const getAllBatches = async (req, res) => {
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 10;
     const skip = (page - 1) * limit;
-    const { course } = req.query;
+    const { course, admissionOpen, country } = req.query;
     const query = {};
+    if (admissionOpen) {
+      return getAllCountriesFromBatchWithAdmissionOpen(req, res);
+    }
+    if (country) {
+      return getAllCitiesByCountry(req, res);
+    }
 
     if (course && course !== "undefined") {
       query.course = course;
@@ -128,6 +134,54 @@ export const getBatchesByCourseId = async (req, res) => {
     }
 
     res.status(200).json(batches);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+// Function to get all countries from batches with admission open
+export const getAllCountriesFromBatchWithAdmissionOpen = async (req, res) => {
+  try {
+    const { admissionOpen } = req.query;
+    let isAdmissionOpen = admissionOpen == "true" ? true : false;
+    // console.log("isAdmissionOpen", isAdmissionOpen);
+    const batches = await Batch.find({
+      is_admission_open: isAdmissionOpen,
+    }).populate("course");
+    // console.log("batches in admission open,", batches);
+
+    if (!batches || batches.length === 0) {
+      return res.status(404).json({
+        message: "No batches found with admission open.",
+      });
+    }
+
+    const countries = batches.map((batch) => batch.country);
+    const uniqueCountries = [...new Set(countries)]; // Return unique countries
+    // console.log("uniqueCountries", uniqueCountries);
+
+    res.status(200).json({ countries: uniqueCountries });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+// Function to get all cities from batches by country
+export const getAllCitiesByCountry = async (req, res) => {
+  try {
+    const { country } = req.query;
+    console.log("country in getallcities=>", country);
+    const batches = await Batch.find({ country }).populate("course");
+
+    if (!batches || batches.length === 0) {
+      return res.status(404).json({
+        message: "No batches found for this country.",
+      });
+    }
+
+    const cities = batches.map((batch) => batch.city);
+    const uniqueCities = [...new Set(cities)]; // Return unique cities
+    console.log("uniqueCities", uniqueCities);
+
+    res.status(200).json({ cities: uniqueCities });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
