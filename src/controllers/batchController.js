@@ -165,7 +165,7 @@ export const getAllCountriesFromBatchWithAdmissionOpen = async (req, res) => {
     const countries = batches.map((batch) => batch.country);
     const uniqueCountries = [...new Set(countries)]; // Return unique countries
     // console.log("uniqueCountries", uniqueCountries);
-
+    
     res.status(200).json({ countries: uniqueCountries });
   } catch (error) {
     res.status(500).json({ message: error.message });

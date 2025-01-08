@@ -127,12 +127,12 @@ const studentSchema = new Schema({
   },
   courses: [
     {
-      batch: { type: mongoose.Schema.Types.ObjectId, ref: "Batch" },
-      course: { type: mongoose.Schema.Types.ObjectId, ref: "Course" },
+      batch: {type: mongoose.Schema.Types.ObjectId, ref: "Batch"},
+      course: {type: mongoose.Schema.Types.ObjectId, ref: "Course"},
       status: {
         type: String,
-        enum: ["ongoing", "completed"],
-        default: "ongoing",
+        enum: ["pending","ongoing", "completed"],
+        default: "pending",
       }, // Status for each course
       completionDate: { type: Date, default: null }, // Optional: when the course was completed
       is_quiz_passed: {

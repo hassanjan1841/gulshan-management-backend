@@ -7,6 +7,7 @@ import { connectDB } from "./src/config/dbConnect.js";
 import CourseRoute from "./src/routes/courseRoutes.js";
 import SectionRoute from "./src/routes/sectionRoutes.js";
 import BatchRoute from "./src/routes/batchRoutes.js";
+import EmailRoutes from './src/routes/EmailRoutes.js'
 connectDB();
 
 dotenv.config();
@@ -33,6 +34,7 @@ app.use("/api/auth", AuthRoute);
 app.use("/api/course", CourseRoute);
 app.use("/api/batch", BatchRoute);
 app.use("/api/section", SectionRoute);
+app.use('/api/sendEmail', EmailRoutes)
 // testing
 // app.get("/", function (req, res) {
 //   res.send("Hello World");

@@ -20,7 +20,7 @@ const createUser = async (req, res) => {
       ...req.body,
       date_of_birth: new Date(req.body.date_of_birth),
     });
-
+    
     res.status(201).json({ success: true, user });
   } catch (error) {
     console.error(error);
