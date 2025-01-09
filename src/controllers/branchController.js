@@ -2,48 +2,48 @@ import Branch from "../models/branchModel.js";
 // import Course from "../models/courseModel.js";
 // import { Student, Teacher } from "../models/userModel.js";
 
-// CREATE a new course
+// CREATE a new branch
 export const createBranch = async (req, res) => {
   try {
-    // Check if the course title already exists
-    const {title} = req.title
+    // Check if the branch title already exists
+    const { title } = req.body;
     const existingBranch = await Branch.findOne({ title });
-    if (existingCourse) {
+    if (existingBranch) {
       return res
         .status(400)
-        .json({ message: "Course with this title already exists." });
+        .json({ message: "Branch with this title already exists." });
     }
 
-    const course = new Course(req.body);
-    await course.save();
-    res.status(201).json({ message: "Course created successfully", course });
+    const branch = new Branch(req.body);
+    await branch.save();
+    res.status(201).json({ message: "Branch created successfully", branch });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
 
-// READ all courses
-export const getAllCourses = async (req, res) => {
+// READ all branches
+export const getAllBranches = async (req, res) => {
   try {
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 10;
     const skip = (page - 1) * limit;
 
-    const courses = await Course.find()
+    const branches = await Branch.find()
       .sort({ createdAt: -1 })
       .skip(skip)
       .limit(limit);
 
-    const totalCourses = await Course.countDocuments();
+    const totalBranches = await Branch.countDocuments();
 
-    if (!courses || courses.length === 0) {
-      return res.status(404).json({ message: "No courses found." });
+    if (!branches || branches.length === 0) {
+      return res.status(404).json({ message: "No branches found." });
     }
 
     res.status(200).json({
-      courses,
-      totalCourses,
-      totalPages: Math.ceil(totalCourses / limit),
+      branches,
+      totalBranches,
+      totalPages: Math.ceil(totalBranches / limit),
       currentPage: page,
     });
   } catch (error) {
@@ -51,65 +51,55 @@ export const getAllCourses = async (req, res) => {
   }
 };
 
-// READ a single course by ID
-export const getCourseById = async (req, res) => {
+// READ a single branch by ID
+export const getBranchById = async (req, res) => {
   try {
     const { id } = req.params;
-    const course = await Course.findById(id);
+    const branch = await Branch.findById(id);
 
-    if (!course) {
-      return res.status(404).json({ message: "Course not found" });
+    if (!branch) {
+      return res.status(404).json({ message: "Branch not found" });
     }
 
-    // Assuming you have separate models for instructors, students, and batches
+    // If you want to count associated documents like students or teachers, 
+    // adjust the related models accordingly (e.g., if there are students or teachers tied to a branch).
 
-    const instructors = await Teacher.countDocuments({ course: id });
-    const students = await Student.countDocuments({ course: id });
-    const batches = await Batch.countDocuments({ course: id });
-
-    res.status(200).json({
-      course,
-      instructors,
-      students,
-      batches,
-    });
+    res.status(200).json({ branch });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
 
-// UPDATE a course by ID
-export const updateCourse = async (req, res) => {
+// UPDATE a branch by ID
+export const updateBranch = async (req, res) => {
   try {
     const { id } = req.params;
 
-    const updatedCourse = await Course.findByIdAndUpdate(id, req.body, {
+    const updatedBranch = await Branch.findByIdAndUpdate(id, req.body, {
       new: true,
     });
 
-    if (!updatedCourse) {
-      return res.status(404).json({ message: "Course not found" });
+    if (!updatedBranch) {
+      return res.status(404).json({ message: "Branch not found" });
     }
 
-    res
-      .status(200)
-      .json({ message: "Course updated successfully", updatedCourse });
+    res.status(200).json({ message: "Branch updated successfully", updatedBranch });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
 
-// DELETE a course by ID
-export const deleteCourse = async (req, res) => {
+// DELETE a branch by ID
+export const deleteBranch = async (req, res) => {
   try {
     const { id } = req.params;
-    const course = await Course.findByIdAndDelete(id);
+    const branch = await Branch.findByIdAndDelete(id);
 
-    if (!course) {
-      return res.status(404).json({ message: "Course not found" });
+    if (!branch) {
+      return res.status(404).json({ message: "Branch not found" });
     }
 
-    res.status(200).json({ message: "Course deleted successfully" });
+    res.status(200).json({ message: "Branch deleted successfully" });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

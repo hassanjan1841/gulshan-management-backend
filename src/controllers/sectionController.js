@@ -35,7 +35,7 @@ export const getAllSections = async (req, res) => {
   try {
     const {batch} = req.query
     const query = {}
-    if(batch){
+    if(batch && batch !== 'undefined'){
       query.batch = batch
     }
     const section = await Section.find(query)
