@@ -28,7 +28,6 @@ const batchSchema = new mongoose.Schema(
     },
     is_admission_open: {
       type: Boolean,
-      required: true,
       default: false,
     },
   },

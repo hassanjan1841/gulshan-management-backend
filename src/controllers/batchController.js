@@ -6,20 +6,25 @@ export const createBatch = async (req, res) => {
     const { course, title } = req.body;
 
     // Check if the batch title already exists
-    const existingBatch = await Batch.findOne({ course });
-    // console.log("existingBatch", existingBatch);
-
-    if (existingBatch && existingBatch.title === title) {
-      return res
-        .status(400)
-        .json({ message: "Batch with this course already exists." });
+    const existingBatch = await Batch.find({ course });
+    if (existingBatch.length > 0) {
+      // Check if any batch title matches the requested title
+      const titleMatch = existingBatch.some((data) => data.title === title);
+      if (titleMatch) {
+        console.log("match hogya");
+        return res
+          .status(400)
+          .json({ error: true, message: "Batch with this course already exists." });
+      }
     }
 
     const batch = new Batch(req.body);
     await batch.save();
-    res.status(201).json({ message: "Batch created successfully", batch });
+    res
+      .status(201)
+      .json({ error: false, message: "Batch created successfully", batch });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({error: true, message: error.message });
   }
 };
 
@@ -31,6 +36,7 @@ export const getAllBatches = async (req, res) => {
     const skip = (page - 1) * limit;
     const { course, admissionOpen, country, city } = req.query;
     const query = {};
+    if(course) query.course = course
     if (admissionOpen) {
       return getAllCountriesFromBatchWithAdmissionOpen(req, res);
     }
@@ -49,26 +55,26 @@ export const getAllBatches = async (req, res) => {
     //   query.course = course;
     // }
 
-    const batches = await Batch.find({})
+    const batches = await Batch.find(query)
       .populate("course")
-      .sort({ createdAt: -1 })
-      .skip(skip)
-      .limit(limit);
+      // .sort({ createdAt: -1 })
+      // .skip(skip)
+      // .limit(limit);
 
     const totalBatches = await Batch.countDocuments(query);
 
-    if (!batches || batches.length === 0) {
-      return res.status(404).json({ message: "No batches found." });
+    if (!batches || batches.length == 0) {
+      return res.status(404).json({error: true, message: "No batches found." });
     }
 
     res.status(200).json({
       batches,
       totalBatches,
-      totalPages: Math.ceil(totalBatches / limit),
-      currentPage: page,
+      // totalPages: Math.ceil(totalBatches / limit),
+      // currentPage: page,
     });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({error: true,  message: error.message });
   }
 };
 

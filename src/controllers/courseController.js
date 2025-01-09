@@ -29,8 +29,15 @@ export const getAllCourses = async (req, res) => {
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 10;
     const skip = (page - 1) * limit;
-
-    const courses = await Course.find()
+    const { allcourses, course } = req.query;
+    if(allcourses){
+      return getAllCoursesWithoutLimit(req, res);
+    }
+    const query = {};
+    if(course) query._id = course;
+    console.log("query >", query);
+    
+    const courses = await Course.find(query)
       .sort({ createdAt: -1 })
       .skip(skip)
       .limit(limit);
@@ -115,3 +122,14 @@ export const deleteCourse = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
+
+export const getAllCoursesWithoutLimit = async (req ,res) => {
+  const courses = await Course.find()
+  if (!courses || courses.length === 0) {
+    return res.status(404).json({ message: "No courses found." });
+  }
+  res.status(200).json({
+   courses: courses,
+  });
+}
