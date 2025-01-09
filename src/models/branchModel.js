@@ -15,7 +15,7 @@ const branchSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    students_limit: { type: String, required: true },
+    students_limit: { type: String,  },
   },
   { timestamps: true }
 );

@@ -1,24 +1,27 @@
 import express from "express";
-import { createBranch, getAllBranches } from "../controllers/branchController.js";
+import {
+  createBranch,
+  getAllBranches,
+  getBranchById,
+  updateBranch,
+  deleteBranch,
+} from "../controllers/branchController.js"; // Assuming your branch controller is correctly set
 
 const router = express.Router();
 
-// Route to create a new course
+// Route to create a new branch
 router.post("/", createBranch);
 
-// Route to get all Batches
+// Route to get all branches
 router.get("/", getAllBranches);
 
-// // Route to get a single Batch by ID
-// router.get("/:id", getBatchById);
+// Route to get a single branch by ID
+router.get("/:id", getBranchById);
 
-// // Route to update a Batch by ID
-// router.put("/:id", updateBatch);
+// Route to update a branch by ID
+router.put("/:id", updateBranch);
 
-// // Route to delete a Batch by ID
-// router.delete("/:id", deleteBatch);
-
-// // Route to get all Batches by Course ID
-// router.get("/course/:courseId", getBatchesByCourseId);
+// Route to delete a branch by ID
+router.delete("/:id", deleteBranch);
 
 export default router;
