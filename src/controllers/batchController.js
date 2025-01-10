@@ -4,7 +4,7 @@ import Course from "../models/courseModel.js";
 export const createBatch = async (req, res) => {
   try {
     const { course, title } = req.body;
-
+    console.log("createbatch", req.body);
     // Check if the batch title already exists
     const existingBatch = await Batch.find({ course });
     if (existingBatch.length > 0) {
@@ -14,7 +14,10 @@ export const createBatch = async (req, res) => {
         console.log("match hogya");
         return res
           .status(400)
-          .json({ error: true, message: "Batch with this course already exists." });
+          .json({
+            error: true,
+            message: "Batch with this course already exists.",
+          });
       }
     }
 
@@ -24,7 +27,7 @@ export const createBatch = async (req, res) => {
       .status(201)
       .json({ error: false, message: "Batch created successfully", batch });
   } catch (error) {
-    res.status(500).json({error: true, message: error.message });
+    res.status(500).json({ error: true, message: error.message });
   }
 };
 
@@ -36,7 +39,7 @@ export const getAllBatches = async (req, res) => {
     const skip = (page - 1) * limit;
     const { course, admissionOpen, country, city } = req.query;
     const query = {};
-    if(course) query.course = course
+    if (course) query.course = course;
     if (admissionOpen) {
       return getAllCountriesFromBatchWithAdmissionOpen(req, res);
     }
@@ -55,16 +58,17 @@ export const getAllBatches = async (req, res) => {
     //   query.course = course;
     // }
 
-    const batches = await Batch.find(query)
-      .populate("course")
-      // .sort({ createdAt: -1 })
-      // .skip(skip)
-      // .limit(limit);
+    const batches = await Batch.find(query).populate("course").populate("branch");
+    // .sort({ createdAt: -1 })
+    // .skip(skip)
+    // .limit(limit);
 
     const totalBatches = await Batch.countDocuments(query);
 
     if (!batches || batches.length == 0) {
-      return res.status(404).json({error: true, message: "No batches found." });
+      return res
+        .status(404)
+        .json({ error: true, message: "No batches found." });
     }
 
     res.status(200).json({
@@ -74,7 +78,7 @@ export const getAllBatches = async (req, res) => {
       // currentPage: page,
     });
   } catch (error) {
-    res.status(500).json({error: true,  message: error.message });
+    res.status(500).json({ error: true, message: error.message });
   }
 };
 
@@ -98,7 +102,6 @@ export const getBatchById = async (req, res) => {
 export const updateBatch = async (req, res) => {
   try {
     const { id } = req.params;
-
     const updatedBatch = await Batch.findByIdAndUpdate(id, req.body, {
       new: true,
     });
@@ -171,7 +174,7 @@ export const getAllCountriesFromBatchWithAdmissionOpen = async (req, res) => {
     const countries = batches.map((batch) => batch.country);
     const uniqueCountries = [...new Set(countries)]; // Return unique countries
     // console.log("uniqueCountries", uniqueCountries);
-    
+
     res.status(200).json({ countries: uniqueCountries });
   } catch (error) {
     res.status(500).json({ message: error.message });

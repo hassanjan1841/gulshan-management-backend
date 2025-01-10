@@ -9,7 +9,6 @@ import SectionRoute from "./src/routes/sectionRoutes.js";
 import BatchRoute from "./src/routes/batchRoutes.js";
 import BranchRoute from "./src/routes/branchRoutes.js";
 import EmailRoutes from './src/routes/EmailRoutes.js'
-import branchRoutes from './src/routes/branchRoutes.js'
 connectDB();
 
 dotenv.config();
