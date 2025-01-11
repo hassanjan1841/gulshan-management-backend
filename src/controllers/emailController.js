@@ -24,7 +24,7 @@ export const sendEmail = async (req, res) => {
           to: receiver, // list of receivers
           subject: subject, // Subject line
           text: message, // plain text body
-          html: `<b>${message}</b>`, // html body
+          html: message, // html body
         });
         console.log("Message sent: %s", info.messageId);
       } catch (error) {
