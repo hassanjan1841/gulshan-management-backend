@@ -13,8 +13,20 @@ const createUser = async (req, res) => {
       });
     }
 
-    const { role } = req.body;
+    const { role, email, phone, cnic } = req.body;
     const Model = role === "teacher" ? Teacher : Student;
+
+    // Check if user already exists
+    const existingUser = await Model.findOne({
+      $or: [{ email }, { phone }, { cnic }],
+    });
+
+    if (existingUser) {
+      return res.status(400).json({
+        success: false,
+        message: "User already registered with provided email, phone, or CNIC.",
+      });
+    }
 
     const user = await Model.create({
       ...req.body,
