@@ -13,14 +13,26 @@ const createUser = async (req, res) => {
       });
     }
 
-    const { role } = req.body;
+    const { role, email, phone, cnic } = req.body;
     const Model = role === "teacher" ? Teacher : Student;
+
+    // Check if user already exists
+    const existingUser = await Model.findOne({
+      $or: [{ email }, { phone }, { cnic }],
+    });
+
+    if (existingUser) {
+      return res.status(400).json({
+        success: false,
+        message: "User already registered with provided email, phone, or CNIC.",
+      });
+    }
 
     const user = await Model.create({
       ...req.body,
       date_of_birth: new Date(req.body.date_of_birth),
     });
-    
+
     res.status(201).json({ success: true, user });
   } catch (error) {
     console.error(error);
@@ -40,7 +52,8 @@ const getAllUsers = async (req, res) => {
 
     const filter = {};
     if (role) filter.role = role;
-    if (status) filter.is_passed_out = status == "false" ? false : true;
+    if (status && status !== "undefined")
+      filter.is_passed_out = status == "false" ? false : true;
     if (batch && batch !== "undefined") filter["section.batch._id"] = batch;
     if (teacher && teacher !== "undefined")
       filter["section.teacher._id"] = teacher;
@@ -66,8 +79,7 @@ const getAllUsers = async (req, res) => {
                 { path: "course" },
               ],
             }
-      )
-      // .populate({ path: "courses", populate: { path: "course" } });
+      );
 
     const totalUsers = await Model.countDocuments(
       role === "teacher" ? {} : filter

@@ -12,12 +12,10 @@ export const createBatch = async (req, res) => {
       const titleMatch = existingBatch.some((data) => data.title === title);
       if (titleMatch) {
         console.log("match hogya");
-        return res
-          .status(400)
-          .json({
-            error: true,
-            message: "Batch with this course already exists.",
-          });
+        return res.status(400).json({
+          error: true,
+          message: "Batch with this course already exists.",
+        });
       }
     }
 
@@ -39,18 +37,31 @@ export const getAllBatches = async (req, res) => {
     const skip = (page - 1) * limit;
     const { course, admissionOpen, country, city } = req.query;
     const query = {};
-    if (course) query.course = course;
-    if (admissionOpen) {
+    if (course && course !== "undefined") query.course = course;
+    if (admissionOpen && admissionOpen !== "undefined") {
       return getAllCountriesFromBatchWithAdmissionOpen(req, res);
     }
-    if (country && !city) {
+    if (country && !city && !course && country !== "undefined") {
       return getAllCitiesByCountry(req, res);
     }
     // console.log("city", city);
-    if (city && country) {
+    if (
+      city &&
+      country &&
+      !course &&
+      city !== "undefined" &&
+      country !== "undefined"
+    ) {
       return getCoursesByCityAndCountry(req, res);
     }
-    if (course && city && country) {
+    if (
+      course &&
+      city &&
+      country &&
+      course !== "undefined" &&
+      city !== "undefined" &&
+      country !== "undefined"
+    ) {
       return getBranchesByCountryCityAndCourse(req, res);
     }
 
@@ -58,7 +69,9 @@ export const getAllBatches = async (req, res) => {
     //   query.course = course;
     // }
 
-    const batches = await Batch.find(query).populate("course").populate("branch");
+    const batches = await Batch.find(query)
+      .populate("course")
+      .populate("branch");
     // .sort({ createdAt: -1 })
     // .skip(skip)
     // .limit(limit);
@@ -162,7 +175,9 @@ export const getAllCountriesFromBatchWithAdmissionOpen = async (req, res) => {
     // console.log("isAdmissionOpen", isAdmissionOpen);
     const batches = await Batch.find({
       is_admission_open: isAdmissionOpen,
-    }).populate("course");
+    })
+      .populate("course")
+      .populate("branch");
     // console.log("batches in admission open,", batches);
 
     if (!batches || batches.length === 0) {
@@ -171,7 +186,8 @@ export const getAllCountriesFromBatchWithAdmissionOpen = async (req, res) => {
       });
     }
 
-    const countries = batches.map((batch) => batch.country);
+    const countries = batches.map((batch) => batch.branch.country);
+    // console.log("countriesr", batches);
     const uniqueCountries = [...new Set(countries)]; // Return unique countries
     // console.log("uniqueCountries", uniqueCountries);
 
@@ -186,9 +202,13 @@ export const getAllCitiesByCountry = async (req, res) => {
     const { country } = req.query;
     // console.log("country in getallcities=>", country);
     const batches = await Batch.find({
-      country,
       is_admission_open: true,
-    }).populate("course");
+    })
+      .populate({
+        path: "branch",
+        match: { country },
+      })
+      .populate("course");
 
     if (!batches || batches.length === 0) {
       return res.status(404).json({
@@ -196,9 +216,9 @@ export const getAllCitiesByCountry = async (req, res) => {
       });
     }
 
-    const cities = batches.map((batch) => batch.city);
+    console.log("uniqueCities", batches);
+    const cities = batches.map((batch) => batch.branch.city);
     const uniqueCities = [...new Set(cities)]; // Return unique cities
-    // console.log("uniqueCities", uniqueCities);
 
     res.status(200).json({ cities: uniqueCities });
   } catch (error) {
@@ -210,10 +230,13 @@ export const getCoursesByCityAndCountry = async (req, res) => {
     const { city, country } = req.query;
     // console.log("city", city);
     const batches = await Batch.find({
-      city,
-      country,
       is_admission_open: true,
-    }).populate("course");
+    })
+      .populate({
+        path: "branch",
+        match: { city, country },
+      })
+      .populate("course");
     // console.log(batches);
     if (!batches || batches.length === 0) {
       return res.status(404).json({

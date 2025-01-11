@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 const sectionSchema = new mongoose.Schema(
   {
     title: { type: String, required: true },
-    description: { type: String, required: true },
+    description: { type: String },
     course: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Course",
@@ -24,7 +24,19 @@ const sectionSchema = new mongoose.Schema(
       enum: ["pending", "ongoing", "merged", "finished"],
       default: "pending",
     },
-    days: { type: String, required: true }, // e.g., 'MWF', 'TTS'
+    days: {
+      type: [String],
+      enum: [
+        "monday",
+        "tuesday",
+        "wednesday",
+        "thursday",
+        "friday",
+        "saturday",
+        "sunday",
+      ],
+      required: true,
+    },
     startTime: { type: String, required: true }, // e.g., '09:00:00'
     endTime: { type: String, required: true }, // e.g., '11:00:00'
     room: { type: String, required: true },

@@ -3,13 +3,13 @@ import Section from "../models/sectionModel.js";
 // CREATE a new Section
 export const createSection = async (req, res) => {
   try {
-    const { days, startTime, endTime, room, instructorId } = req.body;
-
+    const { days, startTime, endTime, room,teacher } = req.body;
+    console.log("days", days);
     const conflict = await Section.findOne({
       days,
       $or: [
         { room }, // Same room
-        { instructorId }, // Same instructor
+        { teacher }, // Same instructor
       ],
       $and: [
         { startTime: { $lt: endTime } }, // Check overlapping
@@ -30,23 +30,42 @@ export const createSection = async (req, res) => {
   }
 };
 
-// READ all sections
+// READ all sections with pagination
 export const getAllSections = async (req, res) => {
   try {
-    const {batch} = req.query
-    const query = {}
-    if(batch && batch !== 'undefined'){
-      query.batch = batch
+    const { batch } = req.query;
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const skip = (page - 1) * limit;
+
+    const query = {};
+    if (batch && batch !== "undefined") {
+      query.batch = batch;
     }
-    const section = await Section.find(query)
+
+    const sections = await Section.find(query)
       .populate("course")
       .populate("batch")
-      .populate("teacher");
+      .populate("teacher")
+      .skip(skip)
+      .limit(limit);
 
-    if (!section || section.length === 0) {
-      return res.status(404).json({error: true, message: "No sections found." });
+    const totalSections = await Section.countDocuments(query);
+    const totalPages = Math.ceil(totalSections / limit);
+
+    if (!sections || sections.length === 0) {
+      return res
+        .status(404)
+        .json({ error: true, message: "No sections found." });
     }
-    res.status(200).json({error: false, sections: section});
+
+    res.status(200).json({
+      error: false,
+      sections,
+      page,
+      totalPages,
+      totalSections,
+    });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -76,6 +95,25 @@ export const getSectionById = async (req, res) => {
 export const updateSection = async (req, res) => {
   try {
     const { id } = req.params;
+    const { days, startTime, endTime, room, teacher } = req.body;
+
+    // Check for conflicts
+    const conflict = await Section.findOne({
+      days,
+      $or: [
+        { room }, // Same room
+        { teacher }, // Same instructor
+      ],
+      $and: [
+        { startTime: { $lt: endTime } }, // Check overlapping
+        { endTime: { $gt: startTime } },
+      ],
+      _id: { $ne: id }, // Exclude the current section
+    });
+
+    if (conflict) {
+      return res.status(400).json({ message: "Section conflict exists." });
+    }
 
     const updatedSection = await Section.findByIdAndUpdate(id, req.body, {
       new: true,

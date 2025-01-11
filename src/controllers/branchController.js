@@ -24,31 +24,31 @@ export const getAllBranches = async (req, res) => {
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 10;
     const skip = (page - 1) * limit;
-    const { createNewBranch, country, city } = req.query;
+    // const { createNewBranch, country, city } = req.query;
+    // console.log("createNewBranch", createNewBranch, country, city);
+    // if (createNewBranch && createNewBranch !== "undefined") {
+    //   return getAllCountriesFromBranch(req, res);
+    // }
 
-    if (createNewBranch) {
-      return getAllCountriesFromBranch(req, res);
-    }
+    // if (country && !city && country !== "undefined" && city !== "undefined") {
+    //   return getAllCitiesByCountry(req, res);
+    // }
 
-    if (country && !city) {
-      return getAllCitiesByCountry(req, res);
-    }
+    // if (city && country && country !== "undefined" && city !== "undefined") {
+    //   return getBranchesByCity(req, res);
+    // }
 
-    if (city && country) {
-      return getBranchesByCity(req, res);
-    }
-    
     const branches = await Branch.find()
       .sort({ createdAt: -1 })
       .skip(skip)
       .limit(limit);
 
-    const totalBranches = branches.length;
+    const totalBranches = await Branch.countDocuments();
 
     if (!branches || branches.length === 0) {
       return res.status(404).json({ message: "No branches found." });
     }
-
+    console.log("totalbranches/limit", totalBranches, skip);
     res.status(200).json({
       branches,
       totalBranches,
