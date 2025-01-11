@@ -24,19 +24,19 @@ export const getAllBranches = async (req, res) => {
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 10;
     const skip = (page - 1) * limit;
-    // const { createNewBranch, country, city } = req.query;
+    const { createNewBranch, country, city } = req.query;
     // console.log("createNewBranch", createNewBranch, country, city);
-    // if (createNewBranch && createNewBranch !== "undefined") {
-    //   return getAllCountriesFromBranch(req, res);
-    // }
+    if (createNewBranch && createNewBranch !== "undefined") {
+      return getAllCountriesFromBranch(req, res);
+    }
 
-    // if (country && !city && country !== "undefined" && city !== "undefined") {
-    //   return getAllCitiesByCountry(req, res);
-    // }
+    if (country && !city && country !== "undefined" && city !== "undefined") {
+      return getAllCitiesByCountry(req, res);
+    }
 
-    // if (city && country && country !== "undefined" && city !== "undefined") {
-    //   return getBranchesByCity(req, res);
-    // }
+    if (city && country && country !== "undefined" && city !== "undefined") {
+      return getBranchesByCity(req, res);
+    }
 
     const branches = await Branch.find()
       .sort({ createdAt: -1 })

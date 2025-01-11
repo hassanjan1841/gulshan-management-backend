@@ -41,11 +41,7 @@ export const validateStudent = [
     .optional()
     .isString()
     .withMessage("Last qualification must be a string"),
-  body("computer_proficiency")
-    .isIn(["None", "Beginner", "Intermediate", "Advanced"])
-    .withMessage(
-      "Computer proficiency must be Basic, Intermediate, or Advanced"
-    ),
+
   body("country").optional().isString().withMessage("Country must be a string"),
   body("has_laptop")
     .optional()

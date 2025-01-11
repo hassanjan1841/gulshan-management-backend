@@ -48,10 +48,9 @@ const getAllUsers = async (req, res) => {
     const limit = parseInt(req.query.limit) || 10;
     const skip = (page - 1) * limit;
     // console.log("search filter in backend>>", search);
-    
 
     const filter = {};
-    if (role) filter.role = role;
+    if (role && role !== "undefined") filter.role = role;
     if (status && status !== "undefined")
       filter.is_passed_out = status == "false" ? false : true;
     if (batch && batch !== "undefined") filter["section.batch._id"] = batch;
@@ -62,9 +61,8 @@ const getAllUsers = async (req, res) => {
     if (search && search !== "undefined") {
       filter["full_name"] = { $regex: search, $options: "i" };
     }
-
-    const Model = role === "teacher" ? Teacher : Student;
-    const users = await Model.find(role === "teacher" ? {} : filter)
+    const Model = !role ? User : role === "teacher" ? Teacher : Student;
+    const users = await Model.find(role ? filter : {})
       .sort({ createdAt: -1 })
       .skip(skip)
       .limit(limit)
