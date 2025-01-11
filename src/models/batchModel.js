@@ -9,7 +9,6 @@ const batchSchema = new mongoose.Schema(
       ref: "Course",
       required: true,
     }, // course ki id ksee aygi (sary course list hojayngy or koi ek select hoga to oski id yaha attach hojaygi)
-   
     branch: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Branch",

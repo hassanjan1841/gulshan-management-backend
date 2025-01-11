@@ -12,7 +12,7 @@ import authenticateToken from "../middleware/verifyToken.js";
 const router = express.Router();
 
 // Route to create a new course
-router.post("/", authenticateToken, createCourse);
+router.post("/", createCourse);
 
 // Route to get all courses
 router.get("/", getAllCourses);

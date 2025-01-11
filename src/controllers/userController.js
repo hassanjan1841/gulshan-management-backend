@@ -35,6 +35,8 @@ const getAllUsers = async (req, res) => {
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 10;
     const skip = (page - 1) * limit;
+    // console.log("search filter in backend>>", search);
+    
 
     const filter = {};
     if (role) filter.role = role;
@@ -65,7 +67,7 @@ const getAllUsers = async (req, res) => {
               ],
             }
       )
-      .populate({ path: "courses", populate: { path: "course" } });
+      // .populate({ path: "courses", populate: { path: "course" } });
 
     const totalUsers = await Model.countDocuments(
       role === "teacher" ? {} : filter
