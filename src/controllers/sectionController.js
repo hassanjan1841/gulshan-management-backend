@@ -37,7 +37,7 @@ export const getAllSections = async (req, res) => {
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 10;
     const skip = (page - 1) * limit;
-
+    
     const query = {};
     if (batch && batch !== "undefined") {
       query.batch = batch;
@@ -64,6 +64,43 @@ export const getAllSections = async (req, res) => {
       sections,
       page,
       totalPages,
+      totalSections,
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+export const getAllTeacherSection = async (req, res) => {
+  try {
+    const { teacher } = req.query;
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const skip = (page - 1) * limit;
+    const query = {};
+    if (teacher && teacher !== "undefined") {
+      query.teacher = teacher;
+    }
+
+    const teacherSections = await Section.find(query)
+      .populate("course")
+      .populate("batch")
+      .populate("teacher")
+
+    const totalSections = await Section.countDocuments(query);
+    const totalPages = Math.ceil(totalSections / limit);
+
+    if (!teacherSections || teacherSections.length === 0) {
+      return res
+        .status(404)
+        .json({ error: true, message: "No sections found." });
+    }
+
+    res.status(200).json({
+      error: false,
+      teacherSections,
+      totalPages,
+      page,
       totalSections,
     });
   } catch (error) {

@@ -104,8 +104,7 @@ const getAllUsers = async (req, res) => {
 const getUser = async (req, res) => {
   try {
     const tokenUser = req.user;
-    const Model = tokenUser.role === "teacher" ? Teacher : Student;
-
+    const Model = tokenUser._doc.role === "teacher" ? Teacher : Student;
     const user = await Model.findById(tokenUser._doc._id);
     if (!user) {
       return res.status(404).json({ message: "User not found." });
@@ -116,6 +115,7 @@ const getUser = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
 
 // Update a specific user's details
 const updateUser = async (req, res) => {
