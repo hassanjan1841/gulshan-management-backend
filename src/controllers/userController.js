@@ -1,5 +1,7 @@
+import mongoose from "mongoose";
 import { User, Teacher, Student } from "../models/userModel.js";
 import { validationResult } from "express-validator";
+import Section from "../models/sectionModel.js";
 
 // Create a new user
 const createUser = async (req, res) => {
@@ -116,7 +118,6 @@ const getUser = async (req, res) => {
   }
 };
 
-
 // Update a specific user's details
 const updateUser = async (req, res) => {
   try {
@@ -159,5 +160,51 @@ const deleteUser = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+// Get one teacher stats
+const getTeacherStats = async (req, res) => {
+  try {
+    const { teacher } = req.params; // Teacher ID from the route parameters
 
-export { getAllUsers, createUser, getUser, updateUser, deleteUser };
+    // Step 1: Get all sections for the teacher
+    const sections = await Section.find().populate({
+      path: "teacher",
+      match: { _id: teacher },
+    });
+    // console.log("sections", sections);
+
+    // Step 2: Get all students enrolled in these sections
+    const sectionIds = sections.map((section) => section._id);
+    const students = await Student.find({ sections: { $in: sectionIds } });
+
+    // Step 3: Get counts for courses and batches
+    const courseCount = new Set(
+      sections.map((section) => section.course.toString())
+    ).size;
+    const batchCount = new Set(
+      sections.map((section) => section.batch.toString())
+    ).size;
+
+    // Return the statistics as a response
+    res.status(200).json({
+      sectionsCount: sections.length,
+      studentsCount: students.length,
+      courseCount,
+      batchCount,
+    });
+  } catch (error) {
+    // Log any errors and return a 500 internal server error response
+    console.error(error);
+    res.status(500).json({
+      message: "An error occurred while fetching teacher statistics.",
+    });
+  }
+};
+
+export {
+  getAllUsers,
+  createUser,
+  getUser,
+  updateUser,
+  deleteUser,
+  getTeacherStats,
+};
