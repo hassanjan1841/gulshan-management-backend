@@ -13,9 +13,7 @@ const login = async (req, res) => {
       })
       .populate({
         path: "courses",
-        populate:[
-          {path:'course'}
-        ],
+        populate: [{ path: "course" }],
         populate: [
           { path: "batch", populate: [{ path: "course" }, { path: "branch" }] },
         ],

@@ -1,6 +1,6 @@
 import { User, Teacher, Student } from "../models/userModel.js";
 import { validationResult } from "express-validator";
-import Section from "../models/sectionModel.js";
+import { Section } from "../models/sectionModel.js";
 
 // Create a new user
 const createUser = async (req, res) => {

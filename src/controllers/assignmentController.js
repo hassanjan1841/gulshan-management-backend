@@ -48,7 +48,9 @@ const getAllAssignment = async (req, res) => {
       .sort({ createdAt: -1 })
       .skip(skip)
       .limit(limit)
-      .populate("section");
+      .populate({
+        path: "section",
+      });
 
     const totalAssignments = await Assignment.countDocuments(filter);
     const totalPages = Math.ceil(totalAssignments / limit);

@@ -30,6 +30,11 @@ const assignmentSchema = new mongoose.Schema(
       default: true,
     },
     pictures: [String], // Array to store multiple pictures
+    status: {
+      type: String,
+      enum: ["late", "pending", "missed", "submitted"],
+      required: true,
+    },
   },
   { timestamps: true }
 );
