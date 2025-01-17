@@ -1,4 +1,4 @@
-import {User} from "../models/userModel.js";
+import { User } from "../models/userModel.js";
 import { generateAccessToken } from "../helpers/generateToken.js";
 // Get a specific user by ID
 const login = async (req, res) => {
@@ -6,7 +6,21 @@ const login = async (req, res) => {
     console.log(req.body);
     const { email } = req.body;
     // Find user by ID
-    const data = await User.findOne({ email: email });
+    const data = await User.findOne({ email: email })
+      .populate({
+        path: "section",
+        populate: [{ path: "batch" }, { path: "teacher" }, { path: "course" }],
+      })
+      .populate({
+        path: "courses",
+        populate:[
+          {path:'course'}
+        ],
+        populate: [
+          { path: "batch", populate: [{ path: "course" }, { path: "branch" }] },
+        ],
+      });
+
     const user = data;
     if (!user) {
       return res.status(404).json({ message: "User not found." });

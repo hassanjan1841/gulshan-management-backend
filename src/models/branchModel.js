@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 
 const branchSchema = new mongoose.Schema(
   {
-    title: { type: String, required: true }, //"batch 13"
+    title: { type: String, required: true }, //"gulshan iqbal"
     country: {
       type: String,
       required: true,
@@ -15,7 +15,7 @@ const branchSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    students_limit: { type: String,  },
+    students_limit: { type: String },
   },
   { timestamps: true }
 );
