@@ -46,5 +46,6 @@ const sectionSchema = new mongoose.Schema(
 );
 
 const Section = mongoose.model("Section", sectionSchema);
+const PreviousSection = mongoose.model("PreviousSection", sectionSchema); // For archived sections
 
-export default Section;
+export { Section, PreviousSection };

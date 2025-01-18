@@ -133,3 +133,4 @@ export const getAllCoursesWithoutLimit = async (req ,res) => {
    courses: courses,
   });
 }
+

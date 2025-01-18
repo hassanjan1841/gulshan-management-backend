@@ -1,9 +1,8 @@
-import Section from "../models/sectionModel.js";
-
+import { Section, PreviousSection } from "../models/sectionModel.js";
 // CREATE a new Section
 export const createSection = async (req, res) => {
   try {
-    const { days, startTime, endTime, room,teacher } = req.body;
+    const { days, startTime, endTime, room, teacher } = req.body;
     console.log("days", days);
     const conflict = await Section.findOne({
       days,
@@ -37,7 +36,7 @@ export const getAllSections = async (req, res) => {
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 10;
     const skip = (page - 1) * limit;
-    
+
     const query = {};
     if (batch && batch !== "undefined") {
       query.batch = batch;
@@ -85,7 +84,7 @@ export const getAllTeacherSection = async (req, res) => {
     const teacherSections = await Section.find(query)
       .populate("course")
       .populate("batch")
-      .populate("teacher")
+      .populate("teacher");
 
     const totalSections = await Section.countDocuments(query);
     const totalPages = Math.ceil(totalSections / limit);
@@ -132,7 +131,27 @@ export const getSectionById = async (req, res) => {
 export const updateSection = async (req, res) => {
   try {
     const { id } = req.params;
-    const { days, startTime, endTime, room, teacher } = req.body;
+    let { days, startTime, endTime, room, teacher } = req.body;
+
+    // Convert all days values to lowercase
+    if (Array.isArray(days)) {
+      days = days.map((day) => day.toLowerCase());
+    }
+    console.log("dasy", days);
+    // Find the current section
+    const currentSection = await Section.findById(id);
+    if (!currentSection) {
+      return res.status(404).json({ message: "Section not found" });
+    }
+
+    // Convert all days values to lowercase in the current section
+    if (Array.isArray(currentSection.days)) {
+      currentSection.days = currentSection.days.map((day) => day.toLowerCase());
+    }
+
+    // Add the current section to the previousSection collection
+    const previousSection = new PreviousSection(currentSection.toObject());
+    await previousSection.save();
 
     // Check for conflicts
     const conflict = await Section.findOne({
@@ -155,10 +174,6 @@ export const updateSection = async (req, res) => {
     const updatedSection = await Section.findByIdAndUpdate(id, req.body, {
       new: true,
     });
-
-    if (!updatedSection) {
-      return res.status(404).json({ message: "Section not found" });
-    }
 
     res
       .status(200)

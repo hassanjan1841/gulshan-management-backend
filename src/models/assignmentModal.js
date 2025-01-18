@@ -12,16 +12,28 @@ const assignmentSchema = new mongoose.Schema(
       ref: "Section",
       required: true,
     },
-    dueDate: {
-      type: Date,
-      required: [true, "Due date is required"],
-    },
     description: {
       type: String,
       default: null, // Optional field, defaults to null if not provided
     },
-    pictures: {
-      type: [String],
+    dueDate: {
+      type: Date,
+      required: [true, "Due date is required"],
+    },
+    createdBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
+    lateUploadAllowed: {
+      type: Boolean,
+      default: true,
+    },
+    pictures: [String], // Array to store multiple pictures
+    status: {
+      type: String,
+      enum: ["late", "pending", "missed", "submitted"],
+      required: true,
     },
   },
   { timestamps: true }

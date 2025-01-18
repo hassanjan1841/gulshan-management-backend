@@ -5,5 +5,4 @@ const router = express.Router();
 router.get('/', getAllAssignment)
 router.post('/', createAssignment)
 
-
 export default router;
