@@ -33,6 +33,7 @@ const assignmentSchema = new mongoose.Schema(
     status: {
       type: String,
       enum: ["late", "pending", "missed", "submitted"],
+      default: 'pending',
       required: true,
     },
   },

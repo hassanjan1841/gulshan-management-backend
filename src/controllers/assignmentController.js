@@ -1,6 +1,4 @@
 import { createAssignmentValidation } from "../middleware/createAssignment.js";
-import Assignment from "../models/assignmentModal.js";
-// import { User, Teacher, Student } from "../models/userModel.js";
 import { validationResult } from "express-validator";
 import Assignment from "../models/assignmentModal.js";
 
@@ -43,14 +41,14 @@ const getAllAssignment = async (req, res) => {
 // Create a new Assignmnt
 const createAssignment = async (req, res) => {
   try {
-    const errors = validationResult(req);
+    // const errors = validationResult(req);
 
-    if (!errors.isEmpty()) {
-      return res.status(400).json({
-        success: false,
-        errors: errors.array(),
-      });
-    }
+    // if (!errors.isEmpty()) {
+    //   return res.status(400).json({
+    //     success: false,
+    //     errors: errors.array(),
+    //   });
+    // }
 
     const assignment = new Assignment(req.body);
 
