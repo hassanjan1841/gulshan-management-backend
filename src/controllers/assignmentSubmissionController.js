@@ -3,13 +3,20 @@ import AssignmentSubmission from "../models/assignmentSubmissions.js";
 
 const createAssignmentSubmission = async (req, res) => {
   try {
-    const { assignment, student, submission } = req.body;
+    const { assignment, student } = req.body;
 
-    const newSubmission = new AssignmentSubmission({
+    const existingSubmission = await AssignmentSubmission.findOne({
       assignment,
       student,
-      submission,
     });
+
+    if (existingSubmission) {
+      return res
+        .status(400)
+        .json({ message: "You have already submitted this Assignment." });
+    }
+
+    const newSubmission = new AssignmentSubmission(req.body);
 
     await newSubmission.save();
 
