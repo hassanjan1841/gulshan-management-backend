@@ -21,10 +21,6 @@ const assignmentSubmissionSchema = new mongoose.Schema(
         type: String,
         default: null,
       },
-      videoLink: {
-        type: String,
-        default: null,
-      },
     },
     submittedAt: {
       type: Date,

@@ -7,6 +7,11 @@ const assignmentSchema = new mongoose.Schema(
       required: [true, "Title is required"],
       minlength: [1, "Title must be at least 1 character long"],
     },
+    section: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Section",
+      required: true,
+    },
     description: {
       type: String,
       default: null, // Optional field, defaults to null if not provided
@@ -14,11 +19,6 @@ const assignmentSchema = new mongoose.Schema(
     dueDate: {
       type: Date,
       required: [true, "Due date is required"],
-    },
-    section: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Section",
-      required: true,
     },
     createdBy: {
       type: mongoose.Schema.Types.ObjectId,
@@ -33,6 +33,7 @@ const assignmentSchema = new mongoose.Schema(
     status: {
       type: String,
       enum: ["late", "pending", "missed", "submitted"],
+      default: 'pending',
       required: true,
     },
   },
