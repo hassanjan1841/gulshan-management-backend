@@ -11,6 +11,7 @@ import BranchRoute from "./src/routes/branchRoutes.js";
 import EmailRoutes from "./src/routes/EmailRoutes.js";
 import AssignmentRoute from "./src/routes/assignmentRoutes.js";
 import AssignmentSubmissionRoute from "./src/routes/assignmentSubmissionRoutes.js";
+import MainQuizRoute from "./src/routes/mainQuizRoute.js";
 connectDB();
 
 dotenv.config();
@@ -40,6 +41,7 @@ app.use("/api/section", SectionRoute);
 app.use("/api/branch", BranchRoute);
 app.use("/api/assignment", AssignmentRoute);
 app.use("/api/assignment-submission", AssignmentSubmissionRoute);
+app.use("/api/main-quiz", MainQuizRoute);
 app.use("/api/sendEmail", EmailRoutes);
 // testing
 // app.get("/", function (req, res) {
